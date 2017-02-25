@@ -73,6 +73,10 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+        .panel-body form {
+            margin-bottom: 10px;
+        }
     </style>
 
     <script>
@@ -94,7 +98,12 @@
 
 <div class="container">
     {% if message!='' %}
-        <div class="alert alert-success" role="alert"><strong>Готово!</strong> {{message}}</div>
+        {% if message_ok %}
+            <div class="alert alert-success" role="alert"><strong>Готово!</strong> {{message}}</div>
+            {% end %}
+        {% if not message_ok %}
+            <div class="alert alert-warning" role="alert"><strong>Готово!</strong> {{message}}</div>
+            {% end %}
         {% end %}
     {% if error!='' %}
         <div class="alert alert-danger" role="alert"><strong>Ошибка!</strong> {{error}}</div>

@@ -29,6 +29,20 @@ class LoginHandler(BaseHandler):
         else:
             self.render('login.html', error='Неверный пароль!')
 
+def get_status_and_message_for_gl(value):
+    ok = True
+    text='Уровень глюкозы в крови в норме.'
+    if value > 5.5:
+        ok = False
+        text = 'Уровень глюкозы в крови выше нормы. Примите рекомендованную вам терапию, либо проконсультируйтесь со специалистом.'
+    elif value<4 and value>=3:
+        ok = False
+        text='Уровень глюкозы в крови ниже рекомендованного значение, вам необходимо его компенсировать.'
+    elif value < 3:
+        ok = False
+        text='ВАМ СРОЧНО НЕОБХОДИМО КОМПЕНСИРОВАТЬ УРОВЕНЬ ГЛЮКОЗЫ!'
+    print(ok, text)
+    return (ok, text)
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -97,7 +111,13 @@ class MainHandler(BaseHandler):
 
             db['results'].insert_one(data)
 
-            self.render('client.html', message='Данные сохранены!', error='')
+            message = 'Данные сохранены! '
+            is_ok = True
+            if type=='GL': # если юзер заполнил глюкозу
+                value = str(self.get_argument('value')).replace(',','.')
+                is_ok, status_message = get_status_and_message_for_gl(float(value))
+                message += status_message
+            self.render('client.html', message_ok=is_ok, message=message, error='')
         except:
             self.render('client.html', message='', error='Проверьте правильность данных!')
 app = tornado.web.Application([
