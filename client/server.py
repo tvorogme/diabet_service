@@ -83,9 +83,11 @@ class MainHandler(BaseHandler):
                 if extn!='.png' and extn!='.jpg' and extn!='.jpeg':
                     raise "error file type"
                 cname = str(uuid.uuid4()) + extn
-                fh = open('images/' + cname, 'wb')
+                fh = open(os.path.dirname(os.path.realpath(__file__))+'/images/' + cname, 'wb')
                 fh.write(fileinfo['body'])
-                Image.open('images/'+cname).thumbnail((300,300), Image.ANTIALIAS).save('images/'+cname)
+                im = Image.open(os.path.dirname(os.path.realpath(__file__))+'/images/'+cname);
+                im.thumbnail((300,300), Image.ANTIALIAS)
+                im.save(os.path.dirname(os.path.realpath(__file__))+'/images/'+cname)
                 tvorog = requests.get('http://185.106.141.196:9991/roctbb?url=http://roctbb.net:5555/images/'+cname)
                 data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': tvorog.text}
             if type=='GG':
@@ -122,7 +124,8 @@ class MainHandler(BaseHandler):
                 is_ok, status_message = get_status_and_message_for_gl(float(value))
                 message += status_message
             self.render('client.html', message_ok=is_ok, message=message, error='')
-        except:
+        except Exception as e:
+            print(e)
             self.render('client.html', message='', error='Проверьте правильность данных!')
 app = tornado.web.Application([
     (r"/", MainHandler),
