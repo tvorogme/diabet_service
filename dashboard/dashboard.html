@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style>
+    body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+</style>
+</head>
+
+
+<body style="background-color: #002D40;">
+
+<div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">DiaFriend</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Статистика</a></li>
+              <li><a href="#">Терапия</a></li>
+              <li><a href="#">Уведомления</a></li>
+
+            </ul>
+
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="panel">
+          <div class="panel-body">
+              <div id="myDiv" style="width: 100%; height: 70%;"></div>
+          </div>
+      </div>
+
+    </div> <!-- /container -->
+
+
+
+
+<script>
+    function getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    var trace1 = {
+        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        y: [3,3],
+        yaxis: 'y2',
+        fill:'tonexty',
+        type: 'scatter',
+        mode: 'lines',
+        line: {color:'#F2734C'},
+        opacity: 0,
+        name: 'Опасный уровень',
+    };
+    var trace2 = {
+        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        y: [15,15],
+        yaxis: 'y2',
+        mode: 'lines',
+        fill:'tonexty',
+        line: {color:'#D9ECF2'},
+        opacity: 0,
+        name: 'Допустимый уровень',
+    };
+
+    var trace3 = {
+        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        y: [20,20],
+        yaxis: 'y2',
+        fill:'tonexty',
+        mode: 'lines',
+        type: 'scatter',
+        line: {color:'#F2734C'},
+        opacity: 0,
+        name: 'Опасный уровень',
+    };
+
+    var gl_data = {
+        x: {% raw gl_times%},
+        y: {% raw gl_values%},
+        mode: 'lines+markers',
+        yaxis: 'y2',
+        name: 'Глюкоза',
+        line: {color: '#1AA6B7', width: 3, shape:'spline'}
+
+    };
+    var ik_data = {
+        x: {% raw ik_times%},
+        y: {% raw ik_values%},
+        type: 'bar',
+        yaxis: 'y1',
+        name: 'Болюсный инсулин',
+        color:'#002D40',
+
+    };
+    var id_data = {
+        x: {% raw id_times%},
+        y: {% raw id_values%},
+        marker: {size: {% raw id_values%}},
+        type: 'lines',
+        yaxis: 'y1',
+        name: 'Базальный инсулин', line: {shape:'hvh'},
+    };
+    var images = [
+        {% for image in images%}
+            {
+              source: 'images/{%raw image["filename"]%}',
+              sizex:20000000,
+                    sizey:7 ,
+                    opacity: 0.5,
+                x: '{%raw image["time"]%}',
+                y: 10,
+                xref:"x",
+                yref:"y",
+            },
+        {% end%}
+        {% for image in pills%}
+            {
+              source: 'https://maxcdn.icons8.com/Color/PNG/48/Healthcare/pill-48.png',
+              sizex:5000000,
+                    sizey:9 ,
+                    opacity: 0.7,
+                x: '{%raw image["time"]%}',
+                y: getRandom(5,20),
+                xref:"x",
+                yref:"y",
+            },
+        {% end%}
+    ]
+    var annotations = [
+        {% for image in pills%}
+            {
+              text: '<b>{%raw image["medicine"]%},<br>{%raw image["value"]%} мг</b>',
+                x: '{%raw image["time"]%}',
+                y: getRandom(5,20),
+                xref:"x",
+                yref:"y",
+            },
+        {% end%}
+    ]
+    var layout = {
+        showlegend: true,
+	    legend: {"orientation": "h"},
+        images: images,
+        annotations: annotations,
+        barmode: 'group',
+        title: 'Уровень глюкозы в крови',
+        xaxis: {range: ['2017-02-19 00:00:00', '2017-02-26 00:00:00']},
+        yaxis: {title: 'Болюсный инсулин'},
+        yaxis2: {
+            title: 'График уровня глюкозы',
+            titlefont: {color: 'rgb(148, 103, 189)'},
+            tickfont: {color: 'rgb(148, 103, 189)'},
+            range: [0,20],
+            overlaying: 'y',
+            side: 'right'
+        }
+
+    };
+
+
+    data = [trace1,trace2,trace3, gl_data, ik_data, id_data]
+
+Plotly.newPlot('myDiv', data, layout);</script>
+</body>
+</html>

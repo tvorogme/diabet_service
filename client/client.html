@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+          crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <!-- Custom styles for this template -->
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #eee;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+
+    <script>
+        
+        function back() {
+            $('.block').hide();
+            $('#chooseBlock').show();
+        }
+        function toBlock(block) {
+            $('#chooseBlock').hide();
+            $('#' + block).show();
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+    {% if message!='' %}
+        <div class="alert alert-success" role="alert"><strong>Готово!</strong> {{message}}</div>
+        {% end %}
+    {% if error!='' %}
+        <div class="alert alert-danger" role="alert"><strong>Ошибка!</strong> {{error}}</div>
+        {% end %}
+    <div id="chooseBlock">
+        <div class="list-group" style="border-radius: 0px; margin-top: 20px;">
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('GLblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/office/PNG/60/Food/sugar_cubes-60.png" width="50" height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Уровень сахара</h3>
+                </div>
+            </a>
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('FDblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Food/hot_dog-48.png" width="50" height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Прием пищи</h3>
+                </div>
+            </a>
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('MDblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/pill-48.png" width="50" height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Лекарство</h3>
+                </div>
+            </a>
+
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('IKblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/diabetes_monitor-48.png" width="50"
+                         height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Болюсный инсулин</h3>
+                </div>
+            </a>
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('IDblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/diabetes_monitor-48.png" width="50"
+                         height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Базальный инсулин</h3>
+                </div>
+            </a>
+
+            <a style="border-radius: 0px;" href="#" class="list-group-item" onclick="toBlock('ANblock')">
+                <div class="media-left media-middle">
+                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/heart_monitor-48.png" width="50"
+                         height="50"
+                         class="text-center">
+                </div>
+                <div class="media-body media-middle">
+                    <h3>Анализ</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div id="GLblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Уровень сахара</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Уровень сахара</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" name="value" placeholder="4,5" required>
+                        <p class="help-block">ммоль/л.</p>
+                        <input type="hidden" name="type" value="GL" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="IKblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Прием болюсного инсулина</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Препарат</label>
+                        <input type="text" class="form-control" name="medicine" placeholder="Название" required>
+                        <label for="exampleInputEmail2">Доза</label>
+                        <input type="text" class="form-control" id="exampleInputEmail2" name="value" placeholder="4,5" required>
+                        <p class="help-block">ед/кг.</p>
+                        <input type="hidden" name="type" value="IK">
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="IDblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Прием болюсного инсулина</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Препарат</label>
+                        <input type="text" class="form-control" name="medicine" placeholder="Название" required>
+                        <label for="exampleInputEmail3">Доза</label>
+                        <input type="text" class="form-control" id="exampleInputEmail3" name="value" placeholder="4,5" required>
+                        <p class="help-block">ед/кг.</p>
+                        <input type="hidden" name="type" value="ID">
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="MDblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Прием лекарства</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Препарат</label>
+                        <input type="text" class="form-control" name="medicine" placeholder="Название" required>
+                        <label for="exampleInputEmail4">Доза</label>
+                        <input type="text" class="form-control" id="exampleInputEmail4" name="value" placeholder="4,5" required>
+                        <p class="help-block">мг.</p>
+                        <input type="hidden" name="type" value="MD">
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="FDblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Прием пищи</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Что вы едите?</label>
+                        <input type="file" class="form-control" name="photo">
+                        <input type="hidden" name="type" value="FD">
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="ANblock" style="display: none;" class="block">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Результат анализа</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Тип анализа</label>
+                        <select name="analisys">
+                            <option value="GG">Гликированный гемоглобин</option>
+                            <option value="AD">Артериальное давление</option>
+                            <option value="LC">Липидный обмен</option>
+                        </select>
+                        <input type="hidden" id="an_type" name="type" value="GG">
+
+                    </div>
+
+
+                    <div class="form-group form-block" id="GGblock" >
+                        <label>Результат</label>
+                        <input type="text" class="form-control" name="value">
+                    </div>
+                    <div class="form-group form-block" id="ADblock" style="display: none;">
+                        <label>Верхнее:</label>
+                        <input type="text" class="form-control" name="hvalue">
+                        <label>Нижнее:</label>
+                        <input type="text" class="form-control" name="lvalue">
+                    </div>
+                    <div class="form-group form-block" id="LCblock" style="display: none;">
+                        <label>Общий холестерин:</label>
+                        <input type="text" class="form-control" name="ah_value">
+                        <label>ЛПН:</label>
+                        <input type="text" class="form-control" name="lpn_value">
+                        <label>ЛВН:</label>
+                        <input type="text" class="form-control" name="lvn_value">
+                        <label>Триглицериды:</label>
+                        <input type="text" class="form-control" name="tg_value">
+
+                    </div>
+
+
+
+                    <script>
+                        $('select').on('change', function() {
+                            if (this.value=='GG')
+                            {
+                                $('.form-block').hide();
+                                $('#GGblock').show();
+                                $('#an_type').val('GG');
+                            }
+                            if (this.value=='AD')
+                            {
+                                $('.form-block').hide();
+                                $('#ADblock').show();
+                                $('#an_type').val('AD');
+                            }
+                            if (this.value=='LC')
+                            {
+                                $('.form-block').hide();
+                                $('#LCblock').show();
+                                $('#an_type').val('LC');
+                            }
+
+                        })
+                    </script>
+
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                </form>
+                <button onclick="back()" class="btn btn-default">Назад</button>
+            </div>
+        </div>
+
+    </div>
+
+</div> <!-- /container -->
+
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+</body>
+</html>
