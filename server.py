@@ -33,6 +33,17 @@ class LoginHandler(BaseHandler):
         else:
             self.render('login.html', error='Неверный пароль!')
 
+class TherapyHandler(BaseHandler):
+    def get(self):
+        if not self.current_user:
+            self.redirect("/login")
+            return
+        self.render('therapy.html')
+    def post(self):
+        if not self.current_user:
+            self.redirect("/login")
+            return
+        self.render('therapy.html')
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -51,35 +62,47 @@ class MainHandler(BaseHandler):
         values['gl']=[]
         values['ik']=[]
         values['id'] = []
+        ad_times = []
+        adh_values = []
+        adl_values = []
 
         images = []
         pills = []
+        analysis = []
 
         for result in results[:]:
             if result['type']=='GL':
                 times['gl'].append(result['time'])
                 values['gl'].append(result['value'])
-            if result['type']=='IK':
+            elif result['type']=='IK':
                 times['ik'].append(result['time'])
                 values['ik'].append(result['value'])
-            if result['type']=='ID':
+            elif result['type']=='ID':
                 times['id'].append(result['time'])
                 values['id'].append(result['value'])
-            if result['type']=='FD':
+            elif result['type']=='FD':
                 images.append(result)
-            if result['type'] == 'MD':
+            elif result['type'] == 'MD':
                 pills.append(result)
+            elif result['type'] == 'AD':
+                ad_times.append(result['time'])
+                adh_values.append(result['hvalue'])
+                adl_values.append(result['lvalue'])
+            else:
+                analysis.append(result)
+
 
 
         self.render('dashboard.html', gl_times=json.dumps(times['gl']), gl_values=json.dumps(values['gl']),
                     ik_times=json.dumps(times['ik']), ik_values=json.dumps(values['ik']),
                     id_times=json.dumps(times['id']), id_values=json.dumps(values['id']), images=images, ctime=int(time.time()),
-                    pills = pills)
+                    pills = pills, analisys=analysis, ad_times=ad_times, adl_values=adl_values, adh_values=adh_values)
         print(times)
 
 
 app = tornado.web.Application([
     (r"/", MainHandler),
+    (r"/therapy", TherapyHandler),
     (r"/login", LoginHandler),
     ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)

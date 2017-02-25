@@ -26,5 +26,6 @@ while now_date.day<26:
         "filename": str(random.randint(1,4))+'.jpg',
         "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
         "type": "FD",
+        "text": 'Ужасная жирная еда!',
         "user_id": "58b090473bd4f4188b200616"
     })

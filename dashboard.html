@@ -22,41 +22,94 @@
 </head>
 
 
-<body style="background-color: #002D40;">
+<body style="background-color: #116CC1;">
 
 <div class="container">
 
-      <!-- Static navbar -->
-      <nav class="navbar navbar-default">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
         <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">DiaFriend</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Статистика</a></li>
-              <li><a href="#">Терапия</a></li>
-              <li><a href="#">Уведомления</a></li>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">DiaFriend</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Статистика</a></li>
+                    <li><a href="therapy">Терапия</a></li>
+                    <li><a href="#">Уведомления</a></li>
+                    <li><a href="#">Диагностика осложнений</a></li>
+                    <li><a href="#">Информация</a></li>
+                    <li><a href="#">Связь с врачем</a></li>
 
-            </ul>
+                </ul>
 
-          </div><!--/.nav-collapse -->
+            </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
-      </nav>
+    </nav>
 
-      <!-- Main component for a primary marketing message or call to action -->
-      <div class="panel">
-          <div class="panel-body">
-              <div id="myDiv" style="width: 100%; height: 70%;"></div>
-          </div>
-      </div>
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="panel">
+        <div class="panel-body">
+            <div id="myDiv" style="width: 100%; height: 70%;"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+        <div class="row">
 
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Давление</strong></div>
+                    <div id="ADDiv" style="width: 100%;"></div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                <div class="panel-heading"><strong>Анализы</strong></div>
+                <table class="table table-stripped">
+                    <thead>
+                    <tr>
+                        <th>Время</th>
+                        <th>Анализ</th>
+                        <th>Результат</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for analis in analisys %}
+                        <tr><td>{{analis['time']}}</td>
+                        <td>{{analis['name']}}</td>
+                        <td>{{analis['value']}}</td></tr>
+                    {% end %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+            </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Дневник питания</strong></div>
+                {% for record in images %}
+                <div class="media">
+                    <div class="media-left media-top">
+                        <img class="media-object img-thumbnail" style="width: 130px; margin: 10px;" src="/images/{{record['filename']}}">
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{record['time']}}</h4>
+                        {{record['text']}}
+                    </div>
+                </div>
+                {% end %}
+            </div>
+        </div>
+    </div>
     </div> <!-- /container -->
 
 
@@ -187,6 +240,29 @@
 
     data = [trace1,trace2,trace3, gl_data, ik_data, id_data]
 
-Plotly.newPlot('myDiv', data, layout);</script>
+    Plotly.newPlot('myDiv', data, layout);
+
+
+
+    var adtrace1 = {
+      x: {% raw ad_times %},
+      y: {% raw adl_values %},
+      name: 'Нижнее давление',
+      type: 'bar'
+    };
+
+    var adtrace2 = {
+      x: {% raw ad_times %},
+      y: {% raw adh_values %},
+      name: 'Верхнее давление',
+      type: 'bar'
+    };
+
+    var data = [adtrace1, adtrace2];
+
+    var layout = {barmode: 'stack'};
+
+    Plotly.newPlot('ADDiv', data, layout);
+</script>
 </body>
 </html>
