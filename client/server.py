@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import random
 from pymongo import MongoClient
-from . import private_config
+import private_config
 
 client = MongoClient(private_config.mongo_connection)
 db = client['diabetlab']
