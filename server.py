@@ -2,15 +2,16 @@ import os
 import uuid
 import time
 
+import sys
 import tornado.ioloop
 import tornado.web
 import random
 import json
 from pymongo import MongoClient
 
-from client.private_config import mongo_connection
+import private_config
 
-client = MongoClient(mongo_connection)
+client = MongoClient(private_config.mongo_connection)
 db = client['diabetlab']
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -80,7 +81,7 @@ class MainHandler(BaseHandler):
 app = tornado.web.Application([
     (r"/", MainHandler),
     (r"/login", LoginHandler),
-    ('/images/(.*)', tornado.web.StaticFileHandler, {'path': '../client/images'}),
+    ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)
 
 app.listen(5555)

@@ -1,11 +1,13 @@
 import os
 import uuid
 
+import requests
 import tornado.ioloop
 import tornado.web
 import random
 from pymongo import MongoClient
 import private_config
+from PIL import Image
 
 client = MongoClient(private_config.mongo_connection)
 db = client['diabetlab']
@@ -83,7 +85,9 @@ class MainHandler(BaseHandler):
                 cname = str(uuid.uuid4()) + extn
                 fh = open('images/' + cname, 'wb')
                 fh.write(fileinfo['body'])
-                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time}
+                Image.open('images/'+cname).thumbnail((300,300), Image.ANTIALIAS).save('images/'+cname)
+                tvorog = requests.get('http://185.106.141.196:9991/roctbb?url=http://roctbb.net:5555/images/'+cname)
+                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': tvorog.text}
             if type=='GG':
                 value = str(self.get_argument('value')).replace(',', '.')
                 data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time}
