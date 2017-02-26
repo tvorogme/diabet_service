@@ -35,10 +35,10 @@ class LoginHandler(BaseHandler):
         else:
             self.render('login.html', error='Неверный пароль!')
 
-def LogoutHandler(BaseHandler):
+class ExitHandler(BaseHandler):
     def get(self):
-        self.clear_cookie("user")
-        self.redirect("/")
+        self.clear_cookie('user');
+        self.redirect('/login')
 
 class TherapyHandler(BaseHandler):
     def get(self):
@@ -134,11 +134,12 @@ class MainHandler(BaseHandler):
 
 
 app = tornado.web.Application([
+    (r"/exit", ExitHandler),
     (r"/", MainHandler),
     (r"/therapy", TherapyHandler),
     (r"/diagno", DiagnoHandler),
     (r"/login", LoginHandler),
-    (r"/logout", LogoutHandler),
+
     ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)
 
