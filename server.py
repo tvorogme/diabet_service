@@ -59,6 +59,14 @@ class TherapyHandler(BaseHandler):
             pass
         self.render('therapy.html',gh1 = user['GH1'],gh2 = user['GH2'],gl1 = user['GL1'],gl2 = user['GL2'])
 
+class DiagnoHandler(BaseHandler):
+    def get(self):
+        if not self.current_user:
+            self.redirect("/login")
+            return
+        self.render('diagno.html', error='')
+
+
 class MainHandler(BaseHandler):
     def get(self):
 
@@ -124,6 +132,7 @@ class MainHandler(BaseHandler):
 app = tornado.web.Application([
     (r"/", MainHandler),
     (r"/therapy", TherapyHandler),
+    (r"/diagno", DiagnoHandler),
     (r"/login", LoginHandler),
     ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)
