@@ -14,13 +14,16 @@ error_message = "Я не расслышала, повторите пожалуй
 
 def generateDigits(text):
 	digits = re.split("\D+", text)
+	digits = filter(None, digits)
 	log("Получились цифры: " + str(digits))
 	result = str(digits[0])
 	result_digital = result
 	if len(digits) > 1:
 		result += " целых и " + str(digits[1]) + " десятых"
 		result_digital += "." + str(digits[1])
-	if len(digits) == 0: raise Exception()
+	if len(digits) == 0: 
+		log("Длина цифр = 0")
+		raise Exception()
 	return (float(result_digital), result + " миллимоль на литр")
 
 def saveSugarValueToMongo(sugar_value):
@@ -33,7 +36,7 @@ def saveSugarValueToMongo(sugar_value):
 		"type": "GL",
 		"value": sugar_value,
 		"time": time_now,
-		"user_id": "58b090473bd4f4188b200616"
+		"user_id": "58b207713673e6c1b087aa53"
 	}
 	log("Значение сахара " + str(sugar_value) + " сохранено с id " + str(collection.insert_one(post).inserted_id))
 
@@ -47,7 +50,7 @@ def main():
 			while True:
 				log("Спрашиваю сахар")
 				sugar_value = speechkit.record_to_text_looped(error_message)
-				log("Парсю числа")
+				log("Парсю числа из: " + sugar_value)
 				try:
 					float_digits, string_digits = generateDigits(sugar_value)
 					speechkit.tts(string_digits + ", правильно?")
