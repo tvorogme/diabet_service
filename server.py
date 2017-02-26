@@ -131,7 +131,6 @@ class MainHandler(BaseHandler):
                     id_times=json.dumps(times['id']), id_values=json.dumps(values['id']), images=images, ctime=int(time.time()),
                     pills = pills, analisys=analysis, ad_times=ad_times, adl_values=adl_values, adh_values=adh_values,
                     gh1 = user['GH1'],gh2 = user['GH2'], we_times=we_times, we_values=we_values)
-        print(times)
 
 
 app = tornado.web.Application([

@@ -8,20 +8,20 @@ client = MongoClient('mongodb://roctbb:rcw000000@ds161029.mlab.com:61029/diabetl
 
 db = client['diabetlab']
 
-user = db['users'].find_one({'email':'roctbb@gmail.com'})
+user = db['users'].find_one({'email':'diab@diab.ru'})
 
 name = str(user['_id'])
 
 now_date = datetime.datetime(2017, 2,15,0,0);
 
-while now_date.day<26:
+while now_date.day<=26:
     interval = random.randint(60, 180)
     now_date += datetime.timedelta(minutes=interval)
     if (now_date.hour<7):
         continue
 
     print(now_date.strftime("%Y-%m-%d %H:%M:%S"))
-    if random.randint(1,5)==1:
+    if random.randint(1,7)==1:
         db['results'].insert_one({
             "value": random.randint(10, 40),
             "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
@@ -29,7 +29,7 @@ while now_date.day<26:
             "user_id": name
         })
         continue
-    if random.randint(1,5)==2:
+    if random.randint(1,7)==2:
         db['results'].insert_one({
             "value": random.randint(10, 40),
             'medicine': 'Сахаропонижел',
@@ -38,7 +38,7 @@ while now_date.day<26:
             "user_id": name
         })
         continue
-    if random.randint(1,3)==1:
+    if random.randint(1,4)==1:
         db['results'].insert_one({
             "value": random.randint(5, 20),
             "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
