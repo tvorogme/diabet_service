@@ -79,7 +79,10 @@ def photo(message):
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
-    user = db['users'].find_one({'chat_id': message.chat.id})
+    if message.chat.id in id_to_user.keys():
+        user = db['users'].find_one({'_id': ObjectId(id_to_user[message.chat.id])})
+    else:
+        user = None
     if user != None:
         bot.send_message(message.chat.id, 'Рад вас видеть, ' + user['name'] + '! Сообщайте мне ваш уровень сахара и присылайте фото еды - я помогу вам вести удобный дневник самоконтрля и питания. Если возникнет вопрос - всегда на связи.')
     else:
@@ -131,7 +134,7 @@ def textAnswer(message): # Название функции не играет н�
             bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+str(user['GH1'])+" до "+str(user['GH2']))
             return
         if text.lower().find('целевой')!=-1 or text.find('рекомендуемый')!=-1 :
-            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+str(user['GL1'])+" до "+str(user['GL1']))
+            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+str(user['GL1'])+" до "+str(user['GL2']))
             return
         if text.lower().find('сахар') != -1:
             try:
