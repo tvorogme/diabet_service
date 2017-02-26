@@ -25,7 +25,6 @@ def login(id):
     user = db['users'].find_one({'chat_id': id})
     if user != None:
         return user
-    bot.send_message(id, text='Здравствуйте! Меня зовут Бот DiaFriend, я помогу вам просто вести дневник самоконтроля и питания, а также буду всегда на связи, если у вас появится вопрос.')
     msg = bot.send_message(id, text="Введите ваш Email от DiaFriend:")
     bot.register_next_step_handler(msg,password)
     return None
@@ -33,7 +32,7 @@ def login(id):
 def makeLogin(message):
     log = temp_storage[message.chat.id]
     pasw = message.text
-    user = db['users'].find_one({'email': log, 'pass': pasw})
+    user = db['users'].find_one({'email': str(log).lower(), 'pass': str(pasw).lower()})
     if user == None:
         bot.send_message(message.chat.id, text='К сожалению, данные неверны. Попробуйте еще раз!')
         login(message.chat.id)
@@ -44,7 +43,7 @@ def makeLogin(message):
 
 
 @bot.message_handler(content_types=['photo'])
-def start(message):
+def photo(message):
     user = login(message.chat.id)
     if user != None:
         file_id = message.photo[-1].file_id
@@ -71,9 +70,12 @@ def start(message):
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
-    user = login(message.chat.id)
+    user = db['users'].find_one({'chat_id': message.chat.id})
     if user != None:
-        bot.send_message(message.chat.id,'Рад вас видеть, '+user['name']+'! Сообщайте мне ваш уровень сахара и присылайте фото еды - я помогу вам вести удобный дневник самоконтрля и питания. Если возникнет вопрос - всегда на связи.')
+        bot.send_message(message.chat.id, 'Рад вас видеть, ' + user['name'] + '! Сообщайте мне ваш уровень сахара и присылайте фото еды - я помогу вам вести удобный дневник самоконтрля и питания. Если возникнет вопрос - всегда на связи.')
+    else:
+        bot.send_message(message.chat.id,text='Здравствуйте! Меня зовут Бот DiaFriend, я помогу вам просто вести дневник самоконтроля и питания, а также буду всегда на связи, если у вас появится вопрос.')
+        login(message.chat.id)
 
 @bot.message_handler(commands=['sugar'])
 def ask_sugar(message):
@@ -111,7 +113,9 @@ def save_sugar(message):
 
 @bot.message_handler(content_types=["text"])
 def textAnswer(message): # Название функции не играет никакой роли, в принципе
-    user = login(message.chat.id)
+    user = db['users'].find_one({'chat_id': message.chat.id})
+    if user == None:
+        return
     if user != None:
         text = str(message.text)
         if text.lower().find('допустимый')!=-1:

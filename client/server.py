@@ -78,17 +78,22 @@ class MainHandler(BaseHandler):
             if type=='FD':
                 fileinfo = self.request.files['photo'][0]
                 fname = fileinfo['filename']
-                extn = os.path.splitext(fname)[1]
+                extn = os.path.splitext(fname)[1].lower()
                 if extn!='.png' and extn!='.jpg' and extn!='.jpeg':
-                    raise "error file type"
+                    raise Exception("error file type")
                 cname = str(uuid.uuid4()) + extn
                 fh = open(os.path.dirname(os.path.realpath(__file__))+'/images/' + cname, 'wb')
                 fh.write(fileinfo['body'])
                 im = Image.open(os.path.dirname(os.path.realpath(__file__))+'/images/'+cname);
                 im.thumbnail((300,300), Image.ANTIALIAS)
                 im.save(os.path.dirname(os.path.realpath(__file__))+'/images/'+cname)
-                tvorog = requests.get('http://185.106.141.196:9991/roctbb?url=http://roctbb.net:5555/images/'+cname)
-                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': tvorog.text}
+                food = ''
+                try:
+                    tvorog = requests.get('http://185.106.141.196:9991/roctbb?url=http://roctbb.net:5555/images/'+cname)
+                    food = tvorog.text
+                except:
+                    pass
+                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': food}
             if type=='GG':
                 value = str(self.get_argument('value')).replace(',', '.')
                 data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time, 'name': 'Гликированный гемоглобин'}
