@@ -25,6 +25,7 @@ def login(id):
     user = db['users'].find_one({'chat_id': id})
     if user != None:
         return user
+    bot.send_message(id, text='Здравствуйте! Меня зовут Бот DiaFriend, я помогу вам просто вести дневник самоконтроля и питания, а также буду всегда на связи, если у вас появится вопрос.')
     msg = bot.send_message(id, text="Введите ваш Email от DiaFriend:")
     bot.register_next_step_handler(msg,password)
     return None
@@ -68,11 +69,11 @@ def start(message):
         db['results'].insert_one(data)
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start', 'help'])
 def start(message):
     user = login(message.chat.id)
     if user != None:
-        bot.send_message(message.chat.id, user['name'] + ', вы уже авторизировались!')
+        bot.send_message(message.chat.id,'Рад вас видеть, '+user['name']+'! Сообщайте мне ваш уровень сахара и присылайте фото еды - я помогу вам вести удобный дневник самоконтрля и питания. Если возникнет вопрос - всегда на связи.')
 
 @bot.message_handler(commands=['sugar'])
 def ask_sugar(message):
@@ -113,16 +114,26 @@ def textAnswer(message): # Название функции не играет н�
     user = login(message.chat.id)
     if user != None:
         text = str(message.text)
-        if text.find('допустимый уровень')!=-1:
-            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+user['GH1']+" до "+user['GH2'])
-        if text.find('целевой')!=-1 or text.find('рекомендуемый')!=-1 :
-            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+user['GL1']+" до "+user['GL1'])
+        if text.lower().find('допустимый')!=-1:
+            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+str(user['GH1'])+" до "+str(user['GH2']))
+            return
+        if text.lower().find('целевой')!=-1 or text.find('рекомендуемый')!=-1 :
+            bot.send_message(message.chat.id, "Ваш допустимый уровень глюкозы в крови от "+str(user['GL1'])+" до "+str(user['GL1']))
+            return
         if text.lower().find('сахар') != -1:
             try:
-                value = float(text.split()[1])
+                value = float(text.split()[1].replace(',', '.'))
                 processSugar(message, value, user)
             except:
                 bot.send_message(message.chat.id, "Простисте, я вас не понял.")
+            return
+        try:
+            value = float(message.text.replace(',', '.'))
+            processSugar(message, value, user)
+        except:
+            bot.send_message(message.chat.id, "Простисте, я вас не понял.")
+
+
 
 
 
