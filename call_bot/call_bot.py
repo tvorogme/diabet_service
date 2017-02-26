@@ -48,8 +48,8 @@ def main():
 				log("Спрашиваю сахар")
 				sugar_value = speechkit.record_to_text_looped(error_message)
 				log("Парсю числа")
-				float_digits, string_digits = generateDigits(sugar_value)
 				try:
+					float_digits, string_digits = generateDigits(sugar_value)
 					speechkit.tts(string_digits + ", правильно?")
 				except:
 					speechkit.tts(error_message)
