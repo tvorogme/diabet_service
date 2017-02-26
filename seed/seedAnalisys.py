@@ -8,7 +8,7 @@ client = MongoClient('mongodb://roctbb:rcw000000@ds161029.mlab.com:61029/diabetl
 
 db = client['diabetlab']
 
-user = db['users'].find_one({'email':'roctbb@gmail.com'})
+user = db['users'].find_one({'email':'diab@diab.ru'})
 
 print(user['_id'])
 
