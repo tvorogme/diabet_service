@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script>
+
+        var numOfHours = [];
+        numOfHours["IK"] = 4;
+        numOfHours["ID"] = 2;
+        numOfHours["MD"] = 2;
+        numOfHours["FD"] = 2;
+        numOfHours["Physd"] = 1;
+        numOfHours["Physw"] = 0;
+        numOfHours["Physm"] = 0;
+
+        /*----------------- DIABET ---------------------*/
+        function checkField(id)
+        {
+
+            if ($("#"+id).prop("checked"))
+            {
+                $("#"+id+"Window").show();
+            }
+            else
+            {
+                $("#"+id+"Window").hide();
+            }
+        }
+        function getDaySelection(name, selected)
+        {
+            days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота","Воскресенье"];
+            var i = 1;
+            phys_day_select = "<div class='form-group'><select name='"+name+"' class='form-control'>";
+            while (i<=7)
+            {
+                phys_day_select +='<option value="'+i+'" ';
+                if (i==selected)
+                {
+                    phys_day_select += "selected";
+                }
+                phys_day_select += '>'+days[i-1]+'</option>';
+                i++;
+            }
+            phys_day_select += "</select></div>";
+            return phys_day_select;
+        }
+        function addHour(type, id, name)
+        {
+
+
+            if (type=='IK')
+                $("#"+id).append('<tr id="diab_'+type+'_hour'+numOfHours[type]+'">' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabSmallCell form-control" name="diab_'+type+'_time['+numOfHours[type]+']"' +
+                        ' type="time" placeholder="12:00" required/></div></td> <td>' +
+                        '<span class="glyphicon glyphicon-remove" role="button" onclick="removeElement(\'diab_'+type+'_hour'+numOfHours[type]+'\');"' +
+                        'style="line-height:100%; color: red;" aria-hidden="true">' +
+                        '</span> </td> </tr>');
+            if (type=='ID')
+                $("#"+id).append('<tr id="diab_'+type+'_hour'+numOfHours[type]+'">' +
+                        '<td><div class="form-group"><input class="diabSmallCell form-control" name="diab_'+type+'_dose['+numOfHours[type]+']" type="number" min="0" max="100" step="0,1" required/></div></td><td>' +
+                        '<div class="form-group"><input class="diabSmallCell form-control" name="diab_'+type+'_times['+numOfHours[type]+']" type="time" placeholder="12:00" required/></div></td>' +
+                        '<td><span class="glyphicon glyphicon-remove" role="button" onclick="removeElement(\'diab_'+type+'_hour'+numOfHours[type]+'\');"' +
+                        'style="line-height:100%; color: red;" aria-hidden="true"></span></td> </tr>');
+            if (type=='MD')
+                $("#"+id).append('<tr id="diab_'+type+'_hour'+numOfHours[type]+'">' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabStandartCell form-control" name="diab_'+type+'_name['+numOfHours[type]+']" type="text" required/></div></td>' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabSmallCell form-control" name="diab_'+type+'_dose['+numOfHours[type]+']" type="text" size=4 required/></td>' +
+                        '</div>' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabSmallCell form-control" name="diab_'+type+'_time['+numOfHours[type]+']" type="time" size="5" required /></td></div>' +
+                        '<td><span class="glyphicon glyphicon-remove" role="button" onclick="removeElement(\'diab_'+type+'_hour'+numOfHours[type]+'\');" ' +
+                        'style="line-height:100%; color: red;" aria-hidden="true"></span></td></tr>');
+            if (type=='FD')
+                $("#"+id).append('' +
+                        '<tr id="diab_'+type+'_hour'+numOfHours[type]+'">' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabStandartCell form-control"  name="diab_'+type+'_name['+numOfHours[type]+']" type="text" required/></div></td>' +
+                        '<td><div class="form-group">' +
+                        '<input class="diabSmallCell form-control" name="diab_'+type+'_time['+numOfHours[type]+']" type="time" size=4 placeholder="12:00" required/></div></td>' +
+                        '<td><span class="glyphicon glyphicon-remove" role="button" onclick="removeElement(\'diab_'+type+'_hour'+numOfHours[type]+'\');" style="line-height:100%; color: red;" aria-hidden="true"></span>' +
+                        '</td></tr>');
+
+            if ((type=='Physd' || type=='Physm' || type=='Physw') && name !="") {
+                newContent = '';
+                if (name == "WE")
+                {
+                    newContent+='<tr id="diab_' + type + '_hour' + numOfHours[type] + '"><td>Вес</td>';
+                }
+                if (name == "GL")
+                {
+                    newContent+='<tr id="diab_' + type + '_hour' + numOfHours[type] + '"><td>Сахар в крови</td>';
+                }
+                if (name == "DN")
+                {
+                    newContent+='<tr id="diab_' + type + '_hour' + numOfHours[type] + '"><td>Диастолическое давление</td>';
+                }
+                if (name == "DV")
+                {
+                    newContent+='<tr id="diab_' + type + '_hour' + numOfHours[type] + '"><td>Систолическое давление</td>';
+                }
+                if (name == "PU")
+                {
+                    newContent+='<tr id="diab_' + type + '_hour' + numOfHours[type] + '"><td>Пульс</td>';
+                }
+                newContent += '<input type="hidden" value="'+name+'" name="diab_' + type + '_type[' + numOfHours[type] + ']" />';
+                if (type=='Physd') {
+                    newContent+='<td><div class="form-group">' +
+                            '<input class="diabSmallCell form-control" name="diab_' + type + '_time[' + numOfHours[type] + ']" type="time" size=3 placeholder="12:00" required/>' +
+                            '</div></td>';
+                }
+                if (type=='Physw') {
+                    newContent+='<td><div class="form-group">' +
+                            getDaySelection('diab_' + type + '_day[' + numOfHours[type]+']',0)+
+                            '</div></td>';
+                    newContent+='<td><div class="form-group">' +
+                            '<input class="diabSmallCell form-control" name="diab_' + type + '_time[' + numOfHours[type] + ']" type="time" size=3 placeholder="12:00" required/>' +
+                            '</div></td>';
+                }
+                if (type=='Physm') {
+                    newContent+='<td><div class="form-group">' +
+                            '<input class="diabSmallCell form-control" name="diab_' + type + '_day[' + numOfHours[type] + ']" type="number" size=3 min="1" max="31" placeholder="1" required/>' +
+                            '</div></td>';
+                    newContent+='<td><div class="form-group">' +
+                            '<input class="diabSmallCell form-control" name="diab_' + type + '_time[' + numOfHours[type] + ']" type="time" size=3 placeholder="12:00" required/>' +
+                            '</div></td>';
+                }
+
+                $("#" + id).append(newContent +
+                        '<td><span class="glyphicon glyphicon-remove" role="button" onclick="removeElement(\'diab_' + type + '_hour' + numOfHours[type] + '\');" style="line-height:100%; color: red;" aria-hidden="true"></span></td></tr>');
+
+            }
+
+
+            numOfHours[type]++;
+        }
+        function removeElement(id)
+        {
+            $("#"+id).remove();
+        }
+
+    </script>
+    <style>
+            body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+        .diabSmallCell {
+              max-width: 80px !important;
+              display: inline !important;
+              padding: 2px 2px !important;
+              height: 25px;
+              text-align: right;
+        }
+        .diabTinyCell {
+            max-width: 50px !important;
+            display: inline !important;
+            padding: 2px 2px !important;
+            height: 25px;
+            text-align: right;
+        }
+        .diabStandartCell {
+            display: inline !important;
+            padding: 2px 2px !important;
+            height: 25px;
+        }
+        .form-group {
+            margin-bottom: 0 !important;
+        }
+        #diabForm td,th {
+            vertical-align: middle !important;
+        }
+        #diabForm label {
+            font-WE:normal;
+        }
+        .bootbtn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-WE: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+
+
+
+<body style="background-color: #116CC1;">
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">DiaFriend</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Статистика</a></li>
+                    <li class="active"><a href="/therapy">Терапия</a></li>
+                    <li><a href="#">Уведомления</a></li>
+                    <li><a href="#">Диагностика осложнений</a></li>
+                    <li><a href="#">Информация</a></li>
+                    <li><a href="#">Связь с врачем</a></li>
+
+                </ul>
+
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+                  <form method="post" action="/therapy" enctype="application/x-www-form-urlencoded" data-toggle="validator" role="form" id="diabForm">
+                      <input type="hidden" name="PatientID" value="8451" />
+                      <input type="hidden" name="cmd" value="diab" />
+                      <input type="hidden" name="action" value="setup" />
+                      <input type="hidden" name="diabSetupSent" value="true" />
+                <div>
+                  <div class="panel panel-default">
+                          <div class="panel-heading">Интервалы гликемии</div>
+                          <div class="panel-body">
+                              <table class="table">
+                                  <tr>
+                                      <th>Целевая ГЛ</th>
+                                      <td>
+                                          <div class="form-group">
+                                              <label for="diab_GL1" class="control-label">Мин. </label>
+                                              <input class="form-control diabSmallCell" name="diab_GL1" id="diab_GL1" type="number" min="0" max="16" step="0,1" value="{{gl1}}" required/>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div class="form-group">
+                                              <label for="diab_GL2" class="control-label">Макс. </label>
+                                              <input class="form-control diabSmallCell" name="diab_GL2" id="diab_GL2" type="number" min="0" max="16" step="0,1" value="{{gl2}}" required/>
+                                          </div>
+                                      </td>
+
+                                  </tr>
+                                  <tr>
+                                      <th>Допустимая ГЛ</th>
+                                      <td>
+                                          <div class="form-group">
+                                              <label for="diab_GH1" class="control-label">Мин. </label>
+                                              <input class="form-control diabSmallCell" name="diab_GH1" id="diab_GH1" type="number" min="0" max="16" step="0,1" value="{{gh1}}" required/>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div class="form-group">
+                                              <label for="diab_GH2" class="control-label">Макс. </label>
+                                              <input class="form-control diabSmallCell" name="diab_GH2" id="diab_GH2" type="number" min="0" max="16" step="0,1" value="{{gh2}}" required/>
+                                          </div>
+                                      </td>
+
+                                  </tr>
+                              </table>
+                          </div>
+                        </div>
+                  <!-- Nav tabs -->
+                    <div class="panel">
+                  <ul class="nav nav-pills" role="tablist">
+                    <li role="presentation" class="active"><a href="#ikid" aria-controls="ikid" role="tab" data-toggle="tab">Инсулин</a></li>
+                    <li role="presentation"><a href="#md" aria-controls="md" role="tab" data-toggle="tab">Медикаменты</a></li>
+                    <li role="presentation"><a href="#fd" aria-controls="fd" role="tab" data-toggle="tab">Диета</a></li>
+                    <li role="presentation"><a href="#phys" aria-controls="phys" role="tab" data-toggle="tab">Измерения</a></li>
+                  </ul>
+                  </div>
+                  <!-- Tab panes -->
+
+                  <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="ikid">
+                        <div class="panel panel-default">
+                          <div class="panel-heading">Короткий инсулин<span class="pull-right"><input onclick="checkField('IK_enabled');" id="IK_enabled" name="diab_IK_enabled" value="yes" type="checkbox" checked/></span></div>
+                          <div class="panel-body" id="IK_enabledWindow">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Препарат короткого инсулина</th>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input class="form-control diabStandartCell" name="diab_IKname" id="diab_IKname" type="text" value="Рапидра"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <table class="table table">
+                                      <tr>
+                                        <th colspan=2>
+                                            Углеводные коэффициенты
+                                        </th>
+                                      </tr>
+                                      <tr>
+                                        <th>1</th>
+                                        <td>
+                                            <div class="form-group">
+                                                c&nbsp;&nbsp;
+                                                <input class="form-control diabTinyCell" type="number" max="23" min="0" step="1" id="diab_CO1h" name="diab_CO1h"  value="7" required/>&nbsp;:00&nbsp;&rarr;
+                                                <input class="form-control diabSmallCell" type="number" max="10" min="0" step="0,1" name="diab_CO1" id="diab_CO1"  value="1" required  />
+                                            </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                          <th>2</th>
+                                          <td>
+                                              <div class="form-group">
+                                                  c&nbsp;&nbsp;
+                                                  <input class="form-control diabTinyCell" type="number" max="23" min="0" step="1" id="diab_CO2h" name="diab_CO2h"  value="13" required />&nbsp;:00&nbsp;&rarr;
+                                                  <input class="form-control diabSmallCell" type="number" max="10" min="0" step="0,1" name="diab_CO2" id="diab_CO2"  value="2" required  />
+                                              </div>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <th>3</th>
+                                          <td>
+                                              <div class="form-group">
+                                                  c&nbsp;&nbsp;
+                                                  <input class="form-control diabTinyCell" type="number" max="23" min="0" step="1" id="diab_CO3h" name="diab_CO3h"  value="19" required />&nbsp;:00&nbsp;&rarr;
+                                                  <input class="form-control diabSmallCell" type="number" max="10" min="0" step="0,1" name="diab_CO3" id="diab_CO3"  value="2.5" required  />
+                                              </div>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                        <th>4</th>
+                                          <td>
+                                              <div class="form-group">
+                                                  c&nbsp;&nbsp;
+                                                  <input class="form-control diabTinyCell" type="number" max="23" min="0" step="1" id="diab_CO4h" name="diab_CO4h"  value="23" />&nbsp;:00&nbsp;&rarr;
+                                                  <input class="form-control diabSmallCell" type="number" max="10" min="0" step="0,1" name="diab_CO4" id="diab_CO4"  value="2"  />
+                                              </div>
+                                          </td>
+                                      </tr>
+                                    </table>
+                                    <table class="table table">
+                                      <tr>
+                                        <th>
+                                            Понижающий коэффициент
+                                        </th>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="form-control diabSmallCell" type="number" max="10" min="0" step="0,1" name="diab_CP" id="diab_CP" value="2" required/>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-5">
+                                    <table class="table" id="diab_IK_hours_table">
+                                        <tr>
+                                            <th>Часы приема</th>
+                                            <td><span class="glyphicon glyphicon-plus" role="button" onclick="addHour('IK', 'diab_IK_hours_table');" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                        </tr>
+                                                                                        <tr id="diab_IK_hour0">
+
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="09:00" name="diab_IK_time[0]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                  <span class="glyphicon glyphicon-remove" role="button" onclick="removeElement('diab_IK_hour0');" style="line-height:100%; color: red;" aria-hidden="true"></span>
+                                                </td>
+                                            </tr>
+                                                                                        <tr id="diab_IK_hour1">
+
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="12:00" name="diab_IK_time[1]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                  <span class="glyphicon glyphicon-remove" role="button" onclick="removeElement('diab_IK_hour1');" style="line-height:100%; color: red;" aria-hidden="true"></span>
+                                                </td>
+                                            </tr>
+                                                                                        <tr id="diab_IK_hour2">
+
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="17:00" name="diab_IK_time[2]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                  <span class="glyphicon glyphicon-remove" role="button" onclick="removeElement('diab_IK_hour2');" style="line-height:100%; color: red;" aria-hidden="true"></span>
+                                                </td>
+                                            </tr>
+                                                                                        <tr id="diab_IK_hour3">
+
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="20:00" name="diab_IK_time[3]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                  <span class="glyphicon glyphicon-remove" role="button" onclick="removeElement('diab_IK_hour3');" style="line-height:100%; color: red;" aria-hidden="true"></span>
+                                                </td>
+                                            </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="panel panel-default">
+                          <div class="panel-heading">Длинный инсулин<span class="pull-right"><input  onclick="checkField('ID_enabled');" id="ID_enabled"  name="diab_ID_enabled" value="yes" type="checkbox" checked/></span></div>
+                          <div id="ID_enabledWindow" class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Препарат длинного инсулина</th>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input class="form-control diabStandartCell" name="diab_IDname" id="diab_ID_medicine" type="text" value="Рапидра Дл"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                        <table class="table" id="diab_ID_hours_table">
+                                            <tr>
+                                                <th>Доза</th>
+                                                <th>Время приема</th>
+                                                <td><span onclick="addHour('ID', 'diab_ID_hours_table');" class="glyphicon glyphicon-plus" role="button" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                            </tr>
+                                                                                        <tr id="diab_ID_hour0">
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="15" name="diab_ID_dose[0]" type="number" min="0" max="100" step="0,1" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="11:20" name="diab_ID_times[0]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td><span onclick="removeElement('diab_ID_hour0');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                            </tr>
+                                                                                        <tr id="diab_ID_hour1">
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="15" name="diab_ID_dose[1]" type="number" min="0" max="100" step="0,1" required/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input class="diabSmallCell form-control" value="20:00" name="diab_ID_times[1]" type="time" placeholder="12:00" required/>
+                                                    </div>
+                                                </td>
+                                                <td><span onclick="removeElement('diab_ID_hour1');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                            </tr>
+                                                                                    </table>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="md">
+                        <div class="panel panel-default">
+                              <div class="panel-heading">Дополнительные медикаменты и сахаропонижающие препараты</div>
+                              <div class="panel-body">
+                                <table class="table" id="diab_MD_hours_table">
+                                    <tr>
+                                        <th>Препарат</th>
+                                        <th>Доза</th>
+                                        <th>Время приема</th>
+                                        <td><span class="glyphicon glyphicon-plus" role="button" onclick="addHour('MD', 'diab_MD_hours_table');" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                    </tr>
+                                                                        <tr  id="diab_MD_hour0">
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabStandartCell form-control" value="Цитрамон" name="diab_MD_name[0]" type="text" required/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" value="1" name="diab_MD_dose[0]" type="number" min="0" max="100" step="0,1" required/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" value="14:00" name="diab_MD_time[0]" type="time" placeholder="12:00" required/>
+                                            </div>
+                                        </td>
+
+                                        <td><span onclick="removeElement('diab_MD_hour0');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                    </tr>
+                                                                        <tr  id="diab_MD_hour1">
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabStandartCell form-control" value="Аскорутин" name="diab_MD_name[1]" type="text" required/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" value="10" name="diab_MD_dose[1]" type="number" min="0" max="100" step="0,1" required/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" value="16:00" name="diab_MD_time[1]" type="time" placeholder="12:00" required/>
+                                            </div>
+                                        </td>
+
+                                        <td><span onclick="removeElement('diab_MD_hour1');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                    </tr>
+                                                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="fd">
+                        <div class="panel panel-default">
+                              <div class="panel-heading">Рекомендации для пациента</div>
+                              <div class="panel-body">
+                                  <div class="form-group">
+                                    <textarea class="form-control" id="diab_FD_text" name="diab_FD_text" class="form-control">Не обжирайся</textarea>
+                                  </div>
+                              </div>
+                        </div>
+                        <div class="panel panel-default">
+                              <div class="panel-heading">Запланированные приемы пищи без инсулина</div>
+                              <div class="panel-body">
+                                  <table class="table" id="diab_FD_hours_table">
+                                      <tr>
+                                          <th>Название</th>
+                                          <th>Время приема</th>
+                                          <td><span class="glyphicon glyphicon-plus" role="button" onclick="addHour('FD', 'diab_FD_hours_table');" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                      </tr>
+
+                                    <tr id="diab_FD_hour1">
+                                        <td><div class="form-group">
+                                                <input class="diabStandartCell form-control"  name="diab_FD_name[0]" type="text" value="Обед" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_FD_time[0]" type="time" value="14:30" size=4 placeholder="12:00" required/>
+                                            </div>
+                                        </td>
+                                        <td><span onclick="removeElement('diab_FD_hour1');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                    </tr>
+
+
+                                    <tr id="diab_FD_hour1">
+                                        <td><div class="form-group">
+                                                <input class="diabStandartCell form-control"  name="diab_FD_name[1]" type="text" value="Полдник" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_FD_time[1]" type="time" value="16:00" size=4 placeholder="12:00" required/>
+                                            </div>
+                                        </td>
+                                        <td><span onclick="removeElement('diab_FD_hour1');" class="glyphicon glyphicon-remove" role="button" style="line-height:100%; color: red;" aria-hidden="true"></span></td>
+                                    </tr>
+
+                                                                  </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="phys">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Нормативы</div>
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tr>
+                                        <th>Показатель</th>
+                                        <th>Мин.</th>
+                                        <th>Макс.</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Вес</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_WE1" type="number" size="3" value="60" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_WE2" type="number" size="3" value="100" required/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Систолическое давление</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_DV1" type="number" size="3" value="100" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_DV2" type="number" size="3" value="130" required/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Диастолическое давление</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_DN1" type="number" size="3" value="60" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_DN2" type="number" size="3" value="56" required/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Пульс</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_PU1" type="number" size="3" value="60" required/>
+                                            </div>
+                                        </td>
+                                        <td><div class="form-group">
+                                                <input class="diabSmallCell form-control" name="diab_PU2" type="number" size="3" value="100" required/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                              <div class="panel-heading">Ежедневные измерения</div>
+                              <div class="panel-body">
+                                  <table class="table" id="diab_Physd_hours_table">
+                                    <tr>
+                                        <th>Показатель</th>
+                                        <th>Время</th>
+                                        <td><span role="button" data-toggle="popover" data-placement="bottom" title="Выберите показатель:" id="popoverD" class="pop glyphicon glyphicon-plus" role="button" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                    </tr>
+                                                                                <tr id="diab_Physd_hour0">
+                                              <td>
+                                                  Сахар в крови
+                                              </td>
+                                              <td>
+                                                  <div class="form-group">
+                                                      <input type="hidden" value="GL" name="diab_Physd_type[0]" />
+                                                      <input class="diabSmallCell form-control" value="18:10" name="diab_Physd_time[0]" type="time" placeholder="12:00" required/>
+                                                  </div>
+                                              </td>
+                                              <td>
+                                                  <span class="glyphicon glyphicon-remove" role="button" onclick="removeElement('diab_Physd_hour0');" style="line-height:100%; color: red;" aria-hidden="true"></span>
+                                              </td>
+                                          </tr>
+
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Еженедельные измерения</div>
+                            <div class="panel-body">
+                                <table class="table" id="diab_Physw_hours_table">
+                                    <tr>
+                                        <th>Показатель</th>
+                                        <th>День недели</th>
+                                        <th>Время</th>
+                                        <td><span role="button" data-toggle="popover" data-placement="bottom" title="Выберите показатель:" id="popoverW" class="pop glyphicon glyphicon-plus" role="button" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Ежемесячные измерения</div>
+                            <div class="panel-body">
+                                <table class="table" id="diab_Physm_hours_table">
+                                    <tr>
+                                        <th>Показатель</th>
+                                        <th>Число месяца</th>
+                                        <th>Время</th>
+                                        <td><span role="button" data-toggle="popover" data-placement="bottom" title="Выберите показатель:" id="popoverM" class="pop glyphicon glyphicon-plus" role="button" style="line-height:100%; color: green;" aria-hidden="true"></span></td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                  </div>
+
+                </div>
+                      <div class="form-group">
+                          <input type="submit" class="bootbtn btn-success" value="Сохранить изменения"/>
+                      </div>
+                  </form>
+    </div>
+<!-- Popover 2 hidden content -->
+<div id="popoverDContent" style="display: none">
+    <ul>
+        <li><a onclick="addHour('Physd', 'diab_Physd_hours_table', 'DN');addHour('Physd', 'diab_Physd_hours_table', 'DV');
+        addHour('Physd', 'diab_Physd_hours_table', 'PU');$('#popoverD').popover('hide');">Давление и пульс</a></span></li>
+        <li><a onclick="addHour('Physd', 'diab_Physd_hours_table', 'GL');$('#popoverD').popover('hide');">Сахар в крови</a></li>
+        <li><a onclick="addHour('Physd', 'diab_Physd_hours_table', 'WE');$('#popoverD').popover('hide');">Вес</a></li>
+    </ul>
+</div>
+<!-- Popover 2 hidden title -->
+<div id="popoverWContent" style="display: none">
+    <ul>
+        <li><a onclick="addHour('Physw', 'diab_Physw_hours_table', 'DN');addHour('Physw', 'diab_Physw_hours_table', 'DV');
+        addHour('Physw', 'diab_Physw_hours_table', 'PU');$('#popoverW').popover('hide');">Давление и пульс</a></span></li>
+        <li><a onclick="addHour('Physw', 'diab_Physw_hours_table', 'GL');$('#popoverW').popover('hide');">Сахар в крови</a></li>
+        <li><a onclick="addHour('Physw', 'diab_Physw_hours_table', 'WE');$('#popoverW').popover('hide');">Вес</a></li>
+    </ul>
+</div>
+<div id="popoverMContent" style="display: none">
+    <ul>
+        <li><a onclick="addHour('Physm', 'diab_Physm_hours_table', 'DN');addHour('Physm', 'diab_Physm_hours_table', 'DV');
+        addHour('Physm', 'diab_Physm_hours_table', 'PU');$('#popoverM').popover('hide');">Давление и пульс</a></span></li>
+        <li><a onclick="addHour('Physm', 'diab_Physm_hours_table', 'GL');$('#popoverM').popover('hide');">Сахар в крови</a></li>
+        <li><a onclick="addHour('Physm', 'diab_Physm_hours_table', 'WE');$('#popoverM').popover('hide');">Вес</a></li>
+    </ul>
+</div>
+
+<script>
+    function enablePopover() {
+        $("#popoverD").popover({
+            html: true,
+            trigger: 'click',
+            content: function () {
+                return $('#popoverDContent').html();
+            },
+        });
+        $("#popoverW").popover({
+            html: true,
+            trigger: 'click',
+            content: function () {
+                return $('#popoverWContent').html();
+            },
+        });
+        $("#popoverM").popover({
+            html: true,
+            trigger: 'click',
+            content: function () {
+                return $('#popoverMContent').html();
+            },
+        });
+
+    }
+    enablePopover();
+    $('body').on('hidden.bs.popover', function (e) {
+        $(e.target).data("bs.popover").inState.click = false;
+    });
+    $('.pop').popover().click(function () {
+        setTimeout(function () {
+            $('.pop').popover('hide');
+        }, 4000);
+    });
+    $.validator.methods.range = function (value, element, param) {
+        var globalizedValue = value.replace(",", ".");
+        return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+    }
+
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+    }
+    $.validator.addMethod('time', function(value, element, param) {
+        return value == '' || value.match(/^([01][0-9]|2[0-3]):[0-5][0-9]$/);
+    }, 'Некорректное время!');
+    $.extend( $.validator.messages, {
+        required: "Это поле необходимо заполнить.",
+        remote: "Пожалуйста, введите правильное значение.",
+        email: "Пожалуйста, введите корректный адрес электронной почты.",
+        url: "Пожалуйста, введите корректный URL.",
+        date: "Пожалуйста, введите корректную дату.",
+        dateISO: "Пожалуйста, введите корректную дату в формате ISO.",
+        number: "Пожалуйста, введите число.",
+        digits: "Пожалуйста, вводите только цифры.",
+        creditcard: "Пожалуйста, введите правильный номер кредитной карты.",
+        equalTo: "Пожалуйста, введите такое же значение ещё раз.",
+        extension: "Пожалуйста, выберите файл с правильным расширением.",
+        maxlength: $.validator.format( "Пожалуйста, введите не больше {0} символов." ),
+        minlength: $.validator.format( "Пожалуйста, введите не меньше {0} символов." ),
+        rangelength: $.validator.format( "Пожалуйста, введите значение длиной от {0} до {1} символов." ),
+        range: $.validator.format( "Пожалуйста, введите число от {0} до {1}." ),
+        max: $.validator.format( "Пожалуйста, введите число, меньшее или равное {0}." ),
+        min: $.validator.format( "Пожалуйста, введите число, большее или равное {0}." )
+    } );
+    $(function() {
+        $('#diabForm').validate();
+    });
+</script>
+
+
+</body>
+</html>

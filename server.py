@@ -7,6 +7,8 @@ import tornado.ioloop
 import tornado.web
 import random
 import json
+
+from bson import ObjectId
 from pymongo import MongoClient
 
 import private_config
@@ -33,6 +35,29 @@ class LoginHandler(BaseHandler):
         else:
             self.render('login.html', error='Неверный пароль!')
 
+class TherapyHandler(BaseHandler):
+    def get(self):
+        if not self.current_user:
+            self.redirect("/login")
+            return
+        name = tornado.escape.xhtml_escape(self.current_user)
+        user = db['users'].find_one({'_id': ObjectId(name)})
+        self.render('therapy.html',gh1 = user['GH1'],gh2 = user['GH2'],gl1 = user['GL1'],gl2 = user['GL2'])
+    def post(self):
+        if not self.current_user:
+            self.redirect("/login")
+            return
+        name = tornado.escape.xhtml_escape(self.current_user)
+        user = db['users'].find_one({'_id': ObjectId(name)})
+        try:
+            user['GH1']=float(self.get_argument('diab_GH1'))
+            user['GH2'] = float(self.get_argument('diab_GH2'))
+            user['GL1'] = float(self.get_argument('diab_GL1'))
+            user['GL2'] = float(self.get_argument('diab_GL2'))
+            db['users'].update({'_id': ObjectId(name)}, user)
+        except:
+            pass
+        self.render('therapy.html',gh1 = user['GH1'],gh2 = user['GH2'],gl1 = user['GL1'],gl2 = user['GL2'])
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -41,7 +66,7 @@ class MainHandler(BaseHandler):
             self.redirect("/login")
             return
         name = tornado.escape.xhtml_escape(self.current_user)
-        print(name)
+        user = db['users'].find_one({'_id': ObjectId(name)})
         results = db['results'].find({'user_id': name}).sort('time')
         times = {}
         values = {}
@@ -51,35 +76,54 @@ class MainHandler(BaseHandler):
         values['gl']=[]
         values['ik']=[]
         values['id'] = []
+        ad_times = []
+        adh_values = []
+        adl_values = []
+
+        we_times = []
+        we_values = []
 
         images = []
         pills = []
+        analysis = []
 
         for result in results[:]:
             if result['type']=='GL':
                 times['gl'].append(result['time'])
                 values['gl'].append(result['value'])
-            if result['type']=='IK':
+            elif result['type']=='IK':
                 times['ik'].append(result['time'])
                 values['ik'].append(result['value'])
-            if result['type']=='ID':
+            elif result['type']=='ID':
                 times['id'].append(result['time'])
                 values['id'].append(result['value'])
-            if result['type']=='FD':
+            elif result['type']=='FD':
                 images.append(result)
-            if result['type'] == 'MD':
+            elif result['type'] == 'MD':
                 pills.append(result)
+            elif result['type'] == 'AD':
+                ad_times.append(result['time'])
+                adh_values.append(result['hvalue'])
+                adl_values.append(result['lvalue'])
+            elif result['type'] == 'WE':
+                we_times.append(result['time'])
+                we_values.append(result['value'])
+            else:
+                analysis.append(result)
+
 
 
         self.render('dashboard.html', gl_times=json.dumps(times['gl']), gl_values=json.dumps(values['gl']),
                     ik_times=json.dumps(times['ik']), ik_values=json.dumps(values['ik']),
                     id_times=json.dumps(times['id']), id_values=json.dumps(values['id']), images=images, ctime=int(time.time()),
-                    pills = pills)
+                    pills = pills, analisys=analysis, ad_times=ad_times, adl_values=adl_values, adh_values=adh_values,
+                    gh1 = user['GH1'],gh2 = user['GH2'], we_times=we_times, we_values=we_values)
         print(times)
 
 
 app = tornado.web.Application([
     (r"/", MainHandler),
+    (r"/therapy", TherapyHandler),
     (r"/login", LoginHandler),
     ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)

@@ -26,7 +26,7 @@
         body {
             padding-top: 40px;
             padding-bottom: 40px;
-            background-color: #eee;
+            background-color: #116CC1;
         }
 
         .form-signin {
@@ -38,6 +38,7 @@
         .form-signin .form-signin-heading,
         .form-signin .checkbox {
             margin-bottom: 10px;
+            color: white;
         }
 
         .form-signin .checkbox {
@@ -79,21 +80,17 @@
 <div class="container">
 
     <form class="form-signin" method="post">
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading" >DiaFriend<br><small style="color: white;">мобильный помощник</small></h2>
         {% if error!='' %}
         <div class="alert alert-danger" role="alert"><strong>Ошибка!</strong> {{error}}</div>
         {% end %}
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="login" required
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email адрес" name="login" required
                autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" name="password" required>
+
+        <button class="btn btn-lg btn-success btn-block" type="submit">Войти</button>
     </form>
 
 </div> <!-- /container -->

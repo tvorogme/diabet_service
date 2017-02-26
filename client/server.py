@@ -43,7 +43,6 @@ def get_status_and_message_for_gl(value):
     elif value < 3:
         ok = False
         text='ВАМ СРОЧНО НЕОБХОДИМО КОМПЕНСИРОВАТЬ УРОВЕНЬ ГЛЮКОЗЫ!'
-    print(ok, text)
     return (ok, text)
 
 class MainHandler(BaseHandler):
@@ -92,28 +91,28 @@ class MainHandler(BaseHandler):
                 data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': tvorog.text}
             if type=='GG':
                 value = str(self.get_argument('value')).replace(',', '.')
-                data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time}
+                data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time, 'name': 'Гликированный гемоглобин'}
+            if type == 'GG':
+                value = str(self.get_argument('value')).replace(',', '.')
+                data = {'type': 'WE', 'value': float(value), 'user_id': name, 'time': current_time,
+                        'name': 'Вес'}
             if type=='LC':
                 ah_value = float(str(self.get_argument('ah_value')).replace(',', '.'))
                 lpn_value = float(str(self.get_argument('lpn_value')).replace(',', '.'))
                 lvn_value = float(str(self.get_argument('lvn_value')).replace(',', '.'))
                 tg_value = float(str(self.get_argument('tg_value')).replace(',', '.'))
 
-                data = {'type': 'AH', 'value': float(ah_value), 'user_id': name, 'time': current_time}
+                data = {'type': 'AH', 'value': float(ah_value), 'user_id': name, 'time': current_time, 'name': 'Общий холестерин'}
                 db['results'].insert_one(data)
-                data = {'type': 'LPN', 'value': float(lpn_value), 'user_id': name, 'time': current_time}
+                data = {'type': 'LPN', 'value': float(lpn_value), 'user_id': name, 'time': current_time, 'name': 'ЛПН'}
                 db['results'].insert_one(data)
-                data = {'type': 'LVN', 'value': float(lvn_value), 'user_id': name, 'time': current_time}
+                data = {'type': 'LVN', 'value': float(lvn_value), 'user_id': name, 'time': current_time, 'name': 'ЛВН'}
                 db['results'].insert_one(data)
-                data = {'type': 'TG', 'value': float(tg_value), 'user_id': name, 'time': current_time}
+                data = {'type': 'TG', 'value': float(tg_value), 'user_id': name, 'time': current_time, 'name': 'Триглицериды'}
             if type=='AD':
                 lvalue = str(self.get_argument('lvalue')).replace(',', '.')
                 hvalue = str(self.get_argument('hvalue')).replace(',', '.')
-                data = {'type': 'GLH', 'value': float(hvalue), 'user_id': name, 'time': current_time}
-                db['results'].insert_one(data)
-                data = {'type': 'GLL', 'value': float(lvalue), 'user_id': name, 'time': current_time}
-
-
+                data = {'type': 'AD', 'lvalue': float(lvalue),'hvalue': float(hvalue),'user_id': name, 'time': current_time}
 
             db['results'].insert_one(data)
 

@@ -26,7 +26,7 @@ while now_date.day<26:
             "value": random.randint(10, 40),
             "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
             "type": "ID",
-            "user_id": "58b090473bd4f4188b200616"
+            "user_id": "58b207713673e6c1b087aa53"
         })
         continue
     if random.randint(1,5)==2:
@@ -35,7 +35,7 @@ while now_date.day<26:
             'medicine': 'Сахаропонижел',
             "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
             "type": "MD",
-            "user_id": "58b090473bd4f4188b200616"
+            "user_id": "58b207713673e6c1b087aa53"
         })
         continue
     if random.randint(1,3)==1:
@@ -43,7 +43,7 @@ while now_date.day<26:
             "value": random.randint(5, 20),
             "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
             "type": "IK",
-            "user_id": "58b090473bd4f4188b200616"
+            "user_id": "58b207713673e6c1b087aa53"
         })
         continue
 
@@ -51,5 +51,5 @@ while now_date.day<26:
         "value": random.randint(30,100)/10,
         "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
         "type": "GL",
-        "user_id": "58b090473bd4f4188b200616"
+        "user_id": "58b207713673e6c1b087aa53"
     })
