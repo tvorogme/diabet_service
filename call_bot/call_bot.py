@@ -19,6 +19,7 @@ def generateDigits(text):
 	if len(digits) > 1:
 		result += " целых и " + str(digits[1]) + " десятых"
 		result_digital += "." + str(digits[1])
+	if len(digits) == 0: raise Exception()
 	return (float(result_digital), result + " миллимоль на литр")
 
 def saveSugarValueToMongo(sugar_value):
@@ -44,7 +45,11 @@ def main():
 		while True:
 			sugar_value = speechkit.record_to_text_looped(error_message)
 			float_digits, string_digits = generateDigits(sugar_value)
-			speechkit.tts(string_digits + ", правильно?")
+			try:
+				speechkit.tts(string_digits + ", правильно?")
+			except:
+				speechkit.tts(error_message)
+				continue
 			answer = speechkit.record_to_text_looped(error_message)
 			if ("не" in answer):
 				speechkit.tts("Тогда повторите еще раз, пожалуйста")
