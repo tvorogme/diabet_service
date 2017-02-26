@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<style>
+    body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+
+.hidden {
+            display: none;
+        }
+
+.minimap {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.minimap div {
+    display: inline-block;
+    width: 19%;
+    height: 30px;
+    border: 1px solid #aaa;
+    background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+    cursor: pointer;
+}
+
+.minimap div:hover {
+    background-image: linear-gradient(to bottom,#e0e0e0 0,#fff 100%);
+}
+
+#heart-logo {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#skin-logo {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.minimap .active {
+    background-image: linear-gradient(to bottom,#e0e0e0 0,#fff 100%);
+}
+</style>
+<script type="text/javascript">
+function back() {
+    $('.block').hide();
+    $('#chooseBlock').show();
+}
+
+window.onload = function toBlock() {
+    // извините за этот гразный хак, но сегодня сдавать проект
+    $('#OSBlock').find('*').show();
+    $('.simp-block').hide();
+    $($('.simp-block')[0]).show();
+    simpTotalScore = 0;
+};
+
+var simpTotalScore = 0;
+function simpCheckChange(checkbox, score) {
+    if (checkbox.checked) {
+        simpTotalScore += score;
+    } else {
+        simpTotalScore -= score;
+    }
+
+    if (simpTotalScore > 3) {
+        toSimpBlock('result-block', '');
+    }
+}
+
+var currentBlock = 'heart-block';
+function nextSimpBlock() {
+    var nextBlock = 0;
+    $(".minimap").find("div").removeClass("active");
+    if (currentBlock == 'heart-block') {
+        nextBlock = 'nerve-block';
+        $("#nerve-logo").addClass("active");
+    } else if (currentBlock == 'nerve-block') {
+        nextBlock = 'others-block';
+        $("#others-logo").addClass("active");
+    } else if (currentBlock == 'others-block') {
+        nextBlock = 'stomack-block';
+        $("#stomack-logo").addClass("active");
+    } else if (currentBlock == 'stomack-block') {
+        nextBlock = 'skin-block';
+        $("#skin-logo").addClass("active");
+    } else if (currentBlock == 'skin-block') {
+        toSimpBlock('result-block', '');
+        return;
+    }
+    $("#" + currentBlock).hide();
+    $("#" + nextBlock).show();
+    currentBlock = nextBlock;
+}
+
+
+function toSimpBlock(blockId, logoDiv) {
+    $(".minimap").find("div").removeClass("active");
+    $(logoDiv).addClass("active");
+    $("#" + currentBlock).hide();
+    $("#" + blockId).show();
+    currentBlock = blockId;
+    if (blockId == 'result-block') {
+        $(".minimap").hide();
+        $("#nextSimpBlockButton").hide();
+        var simpMessage = "";
+        var messageClass = "";
+        if (0 < simpTotalScore && simpTotalScore <=3) {
+            simpMessage = "Симптомы говорят о потенциальном риске для вашего здоровья. Рекомендовано обратиться к врачу в ближайшее время";
+            messageClass = "alert-warning";
+        } else if (simpTotalScore > 3) {
+            simpMessage = "Указанные вами симптомы говорят о высокой опасности для вашего здоровья! Воспользуйтесь функцией экстренного вызова врача: <br><p><a href='tel:112' class='btn btn-danger'>Вызвать врача</a></p>";
+            messageClass = "alert-danger";
+        } else {
+            simpMessage = "С вами все в порядке. Мы рекомендуем регулярно посещать вашего лечащего врача и в случае ухудшения состояния здоровья сообщать об этом специалисту здравоохранения";
+            messageClass = "alert-success";
+        }
+        $("#simp-message").html(simpMessage);
+        $("#simp-message").addClass(messageClass);
+    }
+}
+</script>
+</head>
+
+<body>
+
+<body style="background-color: #116CC1;">
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">DiaFriend</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Статистика</a></li>
+                    <li><a href="therapy">Терапия</a></li>
+                    <li><a href="#">Уведомления</a></li>
+                    <li class="active"><a href="diagno">Диагностика осложнений</a></li>
+                    <li><a href="#">Информация</a></li>
+                    <li><a href="#">Связь с врачем</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+		<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Диагностика осложнений</h3>
+            </div>
+            <div class="panel-body">
+                <div class="minimap">
+                    <div class="active" id="heart-logo" onclick="toSimpBlock('heart-block', this);">
+                        <img src="https://maxcdn.icons8.com/Color/PNG/24/Gaming/hearts-24.png" title="Hearts" width="24">
+                    </div>
+                    <div id="nerve-logo" onclick="toSimpBlock('nerve-block', this);">
+                        <img src="https://maxcdn.icons8.com/Color/PNG/24/Healthcare/brain-24.png" title="Brain" width="24">
+                    </div>
+                    <div id="others-logo" onclick="toSimpBlock('others-block', this);">
+                        <img src="https://maxcdn.icons8.com/Color/PNG/24/Messaging/sad-24.png" title="Sad" width="24">
+                    </div>
+                    <div id="stomack-logo" onclick="toSimpBlock('stomack-block', this)">
+                        <img src="https://maxcdn.icons8.com/Color/PNG/24/Healthcare/stomach-24.png" title="Stomach" width="24">
+                    </div>
+                    <div id="skin-logo" onclick="toSimpBlock('skin-block', this)">
+                        <img src="https://maxcdn.icons8.com/Color/PNG/24/Healthcare/skin-24.png" title="Skin" width="24">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Какие симптомы вы испытываете?</label>
+                    <div class="simp-block" id="heart-block">
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Учащенное сердцебиение</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 5)"> Резкое снижение артериального давления</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 10)"> Боли в сердце, которые не проходят после приема препаратов для лечения стенокардии (если вы их принимаете)</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Одышка</div>
+                    </div>
+                    <div class="simp-block" id="nerve-block">
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Головные боли</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 3)"> Сонливость</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 5)"> Нарушение сознания</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 3)"> Агрессивность</div>
+                    </div>
+                    <div class="simp-block" id="others-block">
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 5)"> Мышечная боль, которая не проходит после приема алальгетиков</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 5)"> Резкий упадок сил</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 5)"> Дрожь и потливость</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 3)"> Сильный голод</div>
+                    </div>
+                    <div class="simp-block" id="stomack-block">
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Рвота</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Диарея</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 1)"> Боли в животе</div>
+                    </div>
+                    <div class="simp-block" id="skin-block">
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 3)"> Бледность кожи</div>
+                        <div><input type="checkbox" onclick="simpCheckChange(this, 3)"> Сниженная эластичность кожи</div>
+                    </div>
+                    <div class="simp-block" id="result-block">
+                        <div id="simp-message" class="alert alert-success">
+                            С вами все в порядке
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" id="nextSimpBlockButton" onclick="nextSimpBlock(this)">Далее</button>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</body>
+</html>
