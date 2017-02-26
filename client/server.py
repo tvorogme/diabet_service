@@ -43,7 +43,6 @@ def get_status_and_message_for_gl(value):
     elif value < 3:
         ok = False
         text='ВАМ СРОЧНО НЕОБХОДИМО КОМПЕНСИРОВАТЬ УРОВЕНЬ ГЛЮКОЗЫ!'
-    print(ok, text)
     return (ok, text)
 
 class MainHandler(BaseHandler):
@@ -93,6 +92,10 @@ class MainHandler(BaseHandler):
             if type=='GG':
                 value = str(self.get_argument('value')).replace(',', '.')
                 data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time, 'name': 'Гликированный гемоглобин'}
+            if type == 'GG':
+                value = str(self.get_argument('value')).replace(',', '.')
+                data = {'type': 'WE', 'value': float(value), 'user_id': name, 'time': current_time,
+                        'name': 'Вес'}
             if type=='LC':
                 ah_value = float(str(self.get_argument('ah_value')).replace(',', '.'))
                 lpn_value = float(str(self.get_argument('lpn_value')).replace(',', '.'))

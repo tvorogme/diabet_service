@@ -295,6 +295,7 @@
                             <option value="GG">Гликированный гемоглобин</option>
                             <option value="AD">Артериальное давление</option>
                             <option value="LC">Липидный обмен</option>
+                            <option value="WE">Вес</option>
                         </select>
                         <input type="hidden" id="an_type" name="type" value="GG">
 
@@ -302,7 +303,11 @@
 
 
                     <div class="form-group form-block" id="GGblock" >
-                        <label>Результат</label>
+                        <label>Результат:</label>
+                        <input type="text" class="form-control" name="value">
+                    </div>
+                    <div class="form-group form-block" id="WEblock" >
+                        <label>Ваш вес:</label>
                         <input type="text" class="form-control" name="value">
                     </div>
                     <div class="form-group form-block" id="ADblock" style="display: none;">
@@ -332,6 +337,12 @@
                                 $('.form-block').hide();
                                 $('#GGblock').show();
                                 $('#an_type').val('GG');
+                            }
+                            if (this.value=='WE')
+                            {
+                                $('.form-block').hide();
+                                $('#WEblock').show();
+                                $('#an_type').val('WE');
                             }
                             if (this.value=='AD')
                             {

@@ -27,5 +27,5 @@ while now_date.day<26:
         "time": now_date.strftime("%Y-%m-%d %H:%M:%S"),
         "type": "FD",
         "text": 'Ужасная жирная еда!',
-        "user_id": "58b090473bd4f4188b200616"
+        "user_id": "58b207713673e6c1b087aa53"
     })
