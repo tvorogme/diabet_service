@@ -4,15 +4,18 @@ from time import strftime, gmtime
 
 import config
 import telebot
+from bson import ObjectId
 from pymongo import MongoClient
-from client import private_config
 import requests
+
 from PIL import Image
 
-client = MongoClient(private_config.mongo_connection)
+client = MongoClient(config.mongo_connection)
 db = client['diabetlab']
 
 bot = telebot.TeleBot(config.token)
+
+id_to_user = {}
 
 temp_storage = {}
 
@@ -22,8 +25,13 @@ def password(message):
    bot.register_next_step_handler(msg, makeLogin)
 
 def login(id):
+    '''
     user = db['users'].find_one({'chat_id': id})
     if user != None:
+        return user
+    '''
+    if id in id_to_user.keys():
+        user = db['users'].find_one({'_id': ObjectId(id_to_user[id])})
         return user
     msg = bot.send_message(id, text="Введите ваш Email от DiaFriend:")
     bot.register_next_step_handler(msg,password)
@@ -37,8 +45,9 @@ def makeLogin(message):
         bot.send_message(message.chat.id, text='К сожалению, данные неверны. Попробуйте еще раз!')
         login(message.chat.id)
     else:
-        user['chat_id'] = message.chat.id
-        db['users'].update({'_id': user['_id']}, user)
+        #user['chat_id'] = message.chat.id
+        #db['users'].update({'_id': user['_id']}, user)
+        id_to_user[message.chat.id]=str(user['_id'])
         bot.send_message(message.chat.id, user['name']+', здравствуйте!')
 
 
@@ -113,9 +122,9 @@ def save_sugar(message):
 
 @bot.message_handler(content_types=["text"])
 def textAnswer(message): # Название функции не играет никакой роли, в принципе
-    user = db['users'].find_one({'chat_id': message.chat.id})
-    if user == None:
+    if message.chat.id not in id_to_user.keys():
         return
+    user = db['users'].find_one({'_id': ObjectId(id_to_user[message.chat.id])})
     if user != None:
         text = str(message.text)
         if text.lower().find('допустимый')!=-1:
@@ -129,13 +138,13 @@ def textAnswer(message): # Название функции не играет н�
                 value = float(text.split()[1].replace(',', '.'))
                 processSugar(message, value, user)
             except:
-                bot.send_message(message.chat.id, "Простисте, я вас не понял.")
+                bot.send_message(message.chat.id, "Простите, я вас не понял.")
             return
         try:
             value = float(message.text.replace(',', '.'))
             processSugar(message, value, user)
         except:
-            bot.send_message(message.chat.id, "Простисте, я вас не понял.")
+            bot.send_message(message.chat.id, "Простите, я вас не понял.")
 
 
 
