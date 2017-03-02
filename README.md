@@ -56,3 +56,5 @@ _Компания Санофи_
 ### Михаил Малышев
 _Студент РЭУ им. Г.В. Плеханова_  
 Разработка голосового помощника и мобильного сайта
+
+![Команда](https://psv4.userapi.com/c810637/u30854629/docs/d21bd5c54608/5Q6A8903c.jpg?extra=l5fCvc93FR8sfc3rIEcFjyPEpcSRVQE38LB9tcxz03VLYB8fdmQGgkCK1tmqvovrPHcEGCEyvPA8Aa9d-AquMAvIgbql1thYZDGhiT8t5ydWQVkp3tqa2w)
