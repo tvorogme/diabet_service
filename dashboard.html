@@ -130,7 +130,7 @@
     }
 
     var trace1 = {
-        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        x: ['{{start_date}}','{{end_date}}'],
         y: [{{gh1}},{{gh1}}],
         yaxis: 'y2',
         fill:'tonexty',
@@ -141,7 +141,7 @@
         name: 'Опасный уровень',
     };
     var trace2 = {
-        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        x: ['{{start_date}}','{{end_date}}'],
         y: [{{gh2}},{{gh2}}],
         yaxis: 'y2',
         mode: 'lines',
@@ -152,7 +152,7 @@
     };
 
     var trace3 = {
-        x: ['2010-02-25 08:40:35','2017-02-28 08:40:35'],
+        x: ['{{start_date}}','{{end_date}}'],
         y: [20,20],
         yaxis: 'y2',
         fill:'tonexty',
@@ -233,7 +233,7 @@
         annotations: annotations,
         barmode: 'group',
         title: 'Уровень глюкозы в крови',
-        xaxis: {range: ['2017-02-23 00:00:00', '2017-02-27 00:00:00']},
+        xaxis: {range: ['{{start_date}}','{{end_date}}']},
         yaxis: {title: 'Болюсный инсулин'},
         yaxis2: {
             title: 'График уровня глюкозы',

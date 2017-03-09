@@ -1,3 +1,4 @@
+import datetime
 import os
 import uuid
 import time
@@ -78,9 +79,13 @@ class MainHandler(BaseHandler):
         if not self.current_user:
             self.redirect("/login")
             return
+
+        end = datetime.datetime.now()
+        start = end - datetime.timedelta(days=7)
+
         name = tornado.escape.xhtml_escape(self.current_user)
         user = db['users'].find_one({'_id': ObjectId(name)})
-        results = db['results'].find({'user_id': name}).sort('time')
+        results = db['results'].find({'user_id': name, "otime": {'$gte': start, '$lt': end}}).sort('time')
         times = {}
         values = {}
         times['gl']=[]
@@ -124,13 +129,14 @@ class MainHandler(BaseHandler):
             else:
                 analysis.append(result)
 
-
+        start+=datetime.timedelta(days=1)
+        end += datetime.timedelta(days=1)
 
         self.render('dashboard.html', gl_times=json.dumps(times['gl']), gl_values=json.dumps(values['gl']),
                     ik_times=json.dumps(times['ik']), ik_values=json.dumps(values['ik']),
                     id_times=json.dumps(times['id']), id_values=json.dumps(values['id']), images=images, ctime=int(time.time()),
                     pills = pills, analisys=analysis, ad_times=ad_times, adl_values=adl_values, adh_values=adh_values,
-                    gh1 = user['GH1'],gh2 = user['GH2'], we_times=we_times, we_values=we_values)
+                    gh1 = user['GH1'],gh2 = user['GH2'], we_times=we_times, we_values=we_values, start_date = start.strftime("%Y-%m-%d %H:%M:%S"), end_date = end.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 app = tornado.web.Application([
