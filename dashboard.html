@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8">
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/lib/moment.min.js"></script>
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/lib/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.print.css"
+          media="print">
+    <meta charset="utf-8">
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/fullcalendar.min.js"></script>
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/locale-all.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<style>
-    body {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
 
-.navbar {
-  margin-bottom: 20px;
-}
-</style>
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 
@@ -41,17 +53,16 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="/">Медкарта</a></li>
+                    <li><a href="/">Календарь</a></li>
+                    <li class="active"><a href="/stats">Медкарта</a></li>
                     <li><a href="diagno">Диагностика осложнений</a></li>
-                    <li><a href="therapy">Терапия</a></li>
-                    <li><a href="#">Уведомления</a></li>
+                    <li><a href="therapy">Настройка терапии</a></li>
                     <li><a href="#">Информация</a></li>
-                    <li><a href="#">Связь с врачем</a></li>
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-              		<li><a href="exit">Выход</a></li>
-              	</ul>
+                    <li><a href="exit">Выход</a></li>
+                </ul>
 
             </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
@@ -63,52 +74,64 @@
             <div id="myDiv" style="width: 100%; height: 70%;"></div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-6">
-        <div class="row">
+            <div class="row">
 
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Давление</strong></div>
-                    <div id="ADDiv" style="width: 100%;"></div>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>Давление</strong></div>
+                            <div class="panel-body">
+                                <div id="ADDiv" style="width: 100%;"></div>
+                            </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Вес</strong></div>
-                    <div id="WEDiv" style="width: 100%;"></div>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>Вес</strong></div>
+                            <div class="panel-body">
+                                <div id="WEDiv" style="width: 100%;"></div>
+                            </div>
+
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                <div class="panel-heading"><strong>Анализы</strong></div>
-                <table class="table table-stripped">
-                    <thead>
-                    <tr>
-                        <th>Время</th>
-                        <th>Анализ</th>
-                        <th>Результат</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for analis in analisys %}
-                        <tr><td>{{analis['time']}}</td>
-                        <td>{{analis['name']}}</td>
-                        <td>{{analis['value']}}</td></tr>
-                    {% end %}
-                    </tbody>
-                </table>
-            </div>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>Результаты анализов</strong></div>
+                            <div class="panel-body">
+                                <table class="table table-stripped">
+                            <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Анализ</th>
+                                <th>Результат</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for analis in analisys %}
+                            <tr>
+                                <td>{{analis['time']}}</td>
+                                <td>{{analis['name']}}</td>
+                                <td>{{analis['value']}}</td>
+                            </tr>
+                            {% end %}
+                            </tbody>
+                        </table>
+                            </div>
+
+                    </div>
+                </div>
             </div>
         </div>
-            </div>
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>Дневник питания</strong></div>
                 {% for record in reversed(images[len(images)-12:]) %}
                 <div class="media">
                     <div class="media-left media-top">
-                        <img class="media-object img-thumbnail" style="width: 130px; margin: 10px;" src="/images/{{record['filename']}}">
+                        <img class="media-object img-thumbnail" style="width: 130px; margin: 10px;"
+                             src="/images/{{record['filename']}}">
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">{{record['time']}}</h4>
@@ -119,12 +142,11 @@
             </div>
         </div>
     </div>
-    </div> <!-- /container -->
-
-
+</div> <!-- /container -->
 
 
 <script>
+
     function getRandom(min, max) {
         return Math.random() * (max - min) + min;
     }
@@ -277,10 +299,11 @@
       x: {% raw we_times %},
       y: {% raw we_values %},
       name: 'Вес, кг',
-      type: 'bar'
+      type: 'lines'
     };
 
     Plotly.newPlot('WEDiv', [wetrace]);
 </script>
+
 </body>
 </html>

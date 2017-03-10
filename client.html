@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/lib/moment.min.js"></script>
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/lib/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.print.css"
+          media="print">
+    <meta charset="utf-8">
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/fullcalendar.min.js"></script>
+    <script src="https://fullcalendar.io/js/fullcalendar-3.2.0/locale-all.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #116CC1;
+        }
+
+        .block {
+            min-width: 350px;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        input[type="checkbox"] {
+            margin: 0 2px 0 0;
+            width: 20px;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .panel-body form {
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .minimap {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .minimap div {
+            display: inline-block;
+            width: 19%;
+            height: 30px;
+            border: 1px solid #aaa;
+            background-image: linear-gradient(to bottom, #fff 0, #e0e0e0 100%);
+            cursor: pointer;
+        }
+
+        .minimap div:hover {
+            background-image: linear-gradient(to bottom, #e0e0e0 0, #fff 100%);
+        }
+
+        #heart-logo {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        #skin-logo {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .minimap .active {
+            background-image: linear-gradient(to bottom, #e0e0e0 0, #fff 100%);
+        }
+
+
+    </style>
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script>
+
+        function back() {
+            $('.block').hide();
+            $('#chooseBlock').show();
+        }
+
+        function toBlock(block) {
+            $('#chooseBlock').hide();
+            $('#' + block).show();
+
+            $("#alertDiv").hide();
+
+            // извините за этот гразный хак, но сегодня сдавать проект
+            $('#OSBlock').find('*').show();
+            $('.simp-block').hide();
+            $($('.simp-block')[0]).show();
+            simpTotalScore = 0;
+        }
+
+        var simpTotalScore = 0;
+        function simpCheckChange(checkbox, score) {
+            if (checkbox.checked) {
+                simpTotalScore += score;
+            } else {
+                simpTotalScore -= score;
+            }
+
+            if (simpTotalScore > 3) {
+                toSimpBlock('result-block', '');
+            }
+        }
+
+        var currentBlock = 'heart-block';
+        function nextSimpBlock() {
+            var nextBlock = 0;
+            $(".minimap").find("div").removeClass("active");
+            if (currentBlock == 'heart-block') {
+                nextBlock = 'nerve-block';
+                $("#nerve-logo").addClass("active");
+            } else if (currentBlock == 'nerve-block') {
+                nextBlock = 'others-block';
+                $("#others-logo").addClass("active");
+            } else if (currentBlock == 'others-block') {
+                nextBlock = 'stomack-block';
+                $("#stomack-logo").addClass("active");
+            } else if (currentBlock == 'stomack-block') {
+                nextBlock = 'skin-block';
+                $("#skin-logo").addClass("active");
+            } else if (currentBlock == 'skin-block') {
+                toSimpBlock('result-block', '');
+                return;
+            }
+            $("#" + currentBlock).hide();
+            $("#" + nextBlock).show();
+            currentBlock = nextBlock;
+        }
+
+
+        function toSimpBlock(blockId, logoDiv) {
+            $(".minimap").find("div").removeClass("active");
+            $(logoDiv).addClass("active");
+            $("#" + currentBlock).hide();
+            $("#" + blockId).show();
+            currentBlock = blockId;
+            if (blockId == 'result-block') {
+                $(".minimap").hide();
+                $("#nextSimpBlockButton").hide();
+                var simpMessage = "";
+                var messageClass = "";
+                if (0 < simpTotalScore && simpTotalScore <= 3) {
+                    simpMessage = "Симптомы говорят о потенциальном риске для вашего здоровья. Рекомендовано обратиться к врачу в ближайшее время";
+                    messageClass = "alert-warning";
+                } else if (simpTotalScore > 3) {
+                    simpMessage = "Указанные вами симптомы говорят о высокой опасности для вашего здоровья! Воспользуйтесь функцией экстренного вызова врача: <br><p><a href='tel:112' class='btn btn-danger'>Вызвать врача</a></p>";
+                    messageClass = "alert-danger";
+                } else {
+                    simpMessage = "С вами все в порядке. Мы рекомендуем регулярно посещать вашего лечащего врача и в случае ухудшения состояния здоровья сообщать об этом специалисту здравоохранения";
+                    messageClass = "alert-success";
+                }
+                $("#simp-message").html(simpMessage);
+                $("#simp-message").addClass(messageClass);
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">DiaFriend</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Календарь</a></li>
+                    <li><a href="/stats">Медкарта</a></li>
+                    <li><a href="diagno">Диагностика осложнений</a></li>
+                    <li><a href="therapy">Настройка терапии</a></li>
+                    <li><a href="#">Информация</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="exit">Выход</a></li>
+                </ul>
+
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+
+    {% if message!='' %}
+    {% if message_ok %}
+    <div class="alert alert-success" role="alert" id="alertDiv"><strong>Готово!</strong> {{message}}</div>
+    {% end %}
+    {% if not message_ok %}
+    <div class="alert alert-warning" role="alert" id="alertDiv"><strong>Готово!</strong> {{message}}</div>
+    {% end %}
+    {% end %}
+    {% if error!='' %}
+    <div class="alert alert-danger" role="alert" id="alertDiv"><strong>Ошибка!</strong> {{error}}</div>
+    {% end %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <strong>Сохранить данные</strong>
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div id="chooseBlock">
+                        <div class="list-group" style="border-radius: 0px; margin-top: 20px;">
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('GLblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/office/PNG/60/Food/sugar_cubes-60.png"
+                                         width="50" height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Уровень сахара</h3>
+                                </div>
+                            </a>
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('FDblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Food/hot_dog-48.png" width="50"
+                                         height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Прием пищи</h3>
+                                </div>
+                            </a>
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('MDblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/pill-48.png" width="50"
+                                         height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Лекарство</h3>
+                                </div>
+                            </a>
+
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('IKblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/diabetes_monitor-48.png"
+                                         width="50"
+                                         height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Болюсный инсулин</h3>
+                                </div>
+                            </a>
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('IDblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/diabetes_monitor-48.png"
+                                         width="50"
+                                         height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Базальный инсулин</h3>
+                                </div>
+                            </a>
+
+                            <a style="border-radius: 0px;" href="#" class="list-group-item"
+                               onclick="toBlock('ANblock')">
+                                <div class="media-left media-middle">
+                                    <img src="https://maxcdn.icons8.com/Color/PNG/48/Healthcare/heart_monitor-48.png"
+                                         width="50"
+                                         height="50"
+                                         class="text-center">
+                                </div>
+                                <div class="media-body media-middle">
+                                    <h3>Анализ или измерение</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="GLblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Уровень сахара</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Уровень сахара</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" name="value"
+                                               placeholder="4,5"
+                                               required>
+                                        <p class="help-block">ммоль/л.</p>
+                                        <input type="hidden" name="type" value="GL" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="IKblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Прием болюсного инсулина</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post">
+                                    <div class="form-group">
+                                        <label>Препарат</label>
+                                        <input type="text" class="form-control" name="medicine" placeholder="Название"
+                                               required>
+                                        <label for="exampleInputEmail2">Доза</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail2" name="value"
+                                               placeholder="4,5"
+                                               required>
+                                        <p class="help-block">ед/кг.</p>
+                                        <input type="hidden" name="type" value="IK">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="IDblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Прием болюсного инсулина</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post">
+                                    <div class="form-group">
+                                        <label>Препарат</label>
+                                        <input type="text" class="form-control" name="medicine" placeholder="Название"
+                                               required>
+                                        <label for="exampleInputEmail3">Доза</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail3" name="value"
+                                               placeholder="4,5"
+                                               required>
+                                        <p class="help-block">ед/кг.</p>
+                                        <input type="hidden" name="type" value="ID">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="MDblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Прием лекарства</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post">
+                                    <div class="form-group">
+                                        <label>Препарат</label>
+                                        <input type="text" class="form-control" name="medicine" placeholder="Название"
+                                               required>
+                                        <label for="exampleInputEmail4">Доза</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail4" name="value"
+                                               placeholder="4,5"
+                                               required>
+                                        <p class="help-block">мг.</p>
+                                        <input type="hidden" name="type" value="MD">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="FDblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Прием пищи</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label>Что вы едите?</label>
+                                        <input type="file" class="form-control" name="photo">
+                                        <input type="hidden" name="type" value="FD">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="ANblock" style="display: none;" class="block">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Результат анализа</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label>Тип анализа</label>
+                                        <select name="analisys">
+                                            <option value="GG">Гликированный гемоглобин</option>
+                                            <option value="AD">Артериальное давление</option>
+                                            <option value="LC">Липидный обмен</option>
+                                            <option value="WE">Вес</option>
+                                        </select>
+                                        <input type="hidden" id="an_type" name="type" value="GG">
+
+                                    </div>
+
+
+                                    <div class="form-group form-block" id="GGblock">
+                                        <label>Результат:</label>
+                                        <input type="text" class="form-control" name="value">
+                                    </div>
+                                    <div class="form-group form-block" id="WEblock">
+                                        <label>Ваш вес:</label>
+                                        <input type="text" class="form-control" name="value">
+                                    </div>
+                                    <div class="form-group form-block" id="ADblock" style="display: none;">
+                                        <label>Верхнее:</label>
+                                        <input type="text" class="form-control" name="hvalue">
+                                        <label>Нижнее:</label>
+                                        <input type="text" class="form-control" name="lvalue">
+                                    </div>
+                                    <div class="form-group form-block" id="LCblock" style="display: none;">
+                                        <label>Общий холестерин:</label>
+                                        <input type="text" class="form-control" name="ah_value">
+                                        <label>ЛПН:</label>
+                                        <input type="text" class="form-control" name="lpn_value">
+                                        <label>ЛВН:</label>
+                                        <input type="text" class="form-control" name="lvn_value">
+                                        <label>Триглицериды:</label>
+                                        <input type="text" class="form-control" name="tg_value">
+
+                                    </div>
+
+
+                                    <script>
+                                        $('select').on('change', function () {
+                                            if (this.value == 'GG') {
+                                                $('.form-block').hide();
+                                                $('#GGblock').show();
+                                                $('#an_type').val('GG');
+                                            }
+                                            if (this.value == 'WE') {
+                                                $('.form-block').hide();
+                                                $('#WEblock').show();
+                                                $('#an_type').val('WE');
+                                            }
+                                            if (this.value == 'AD') {
+                                                $('.form-block').hide();
+                                                $('#ADblock').show();
+                                                $('#an_type').val('AD');
+                                            }
+                                            if (this.value == 'LC') {
+                                                $('.form-block').hide();
+                                                $('#LCblock').show();
+                                                $('#an_type').val('LC');
+                                            }
+
+                                        })
+                                    </script>
+
+                                    <button type="submit" class="btn btn-success">Сохранить</button>
+
+                                </form>
+                                <button onclick="back()" class="btn btn-default">Назад</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <strong>Календарь</strong>
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div id="calendar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div> <!-- /container -->
+
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script>
+    var initialLocaleCode = 'ru';
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,listDay'
+            },
+            defaultDate: '{{today}}',
+            defaultView: 'listDay',
+            locale: initialLocaleCode,
+            buttonIcons: false, // show the prev/next text
+            weekNumbers: true,
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+
+
+            events: '/events'
+        });
+    });
+</script>
+</body>
+</html>
