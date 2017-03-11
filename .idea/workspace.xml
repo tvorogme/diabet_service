@@ -2,25 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b23029bb-703d-47bf-87a9-646803a00bd4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/1.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/2.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/3.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/4.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/seed/CSV_to_JSON.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/seed/food.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/telegram/food.json" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/images/67d9da3a-5a6c-4849-9f3e-02f2448a6fae.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/images/cc305365-ee81-4b63-9a35-827f5dd7723b.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/images/dab8c0e1-3fa6-46f2-af96-3d3ff464e3e8.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/client/images/e6ca2a67-e4ed-4604-bdfa-3d01b6e8fbc6.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/seed/add_text.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client.html" afterPath="$PROJECT_DIR$/client.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dashboard.html" afterPath="$PROJECT_DIR$/dashboard.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/seed/seedData.py" afterPath="$PROJECT_DIR$/seed/seedData.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/seed/seedEvents.py" afterPath="$PROJECT_DIR$/seed/seedEvents.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/telegram/bot.py" afterPath="$PROJECT_DIR$/telegram/bot.py" />
     </list>
     <ignored path="diabetLab.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -668,7 +650,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489179984317</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="new bot">
+      <created>1489272676839</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1489272676840</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -728,7 +717,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add calendar" />
-    <option name="LAST_COMMIT_MESSAGE" value="add calendar" />
+    <MESSAGE value="new bot" />
+    <option name="LAST_COMMIT_MESSAGE" value="new bot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
