@@ -46,7 +46,7 @@ class ExitHandler(BaseHandler):
 
 class EventsHandler(BaseHandler):
     def get(self):
-        colors = {'GL': '#7B2EC1', 'FD': '#7EBF28','ID': '#7CADD8','AD': '#116CC1','DS': '#C14C1B','GG': '#C14C1B'}
+        colors = {'GL': '#7B2EC1', 'FD': '#7EBF28','ID': '#7CADD8','AD': '#116CC1','WE': '#C14C1B','DS': '#C14C1B','GG': '#C14C1B'}
         start = self.get_argument('start')
         end = self.get_argument('end')
         start_date = datetime.datetime.strptime(start, "%Y-%m-%d")
@@ -108,12 +108,13 @@ class StatsHandler(BaseHandler):
             self.redirect("/login")
             return
 
-        end = datetime.datetime.now()
+        end = datetime.datetime.now() + datetime.timedelta(days=1)
         start = end - datetime.timedelta(days=7)
 
         name = tornado.escape.xhtml_escape(self.current_user)
         user = db['users'].find_one({'_id': ObjectId(name)})
-        results = db['results'].find({'user_id': name, "otime": {'$gte': start, '$lt': end}}).sort('time')
+        results = list(db['results'].find({'type': 'FD','user_id': name, "otime": {'$gte': start, '$lt': end}}).sort('time'))
+        results += list(db['results'].find({'type': {'$ne':'FD'},'user_id': name}).sort('time'))
         times = {}
         values = {}
         times['gl']=[]
@@ -193,23 +194,23 @@ class MainHandler(BaseHandler):
             return
         name = tornado.escape.xhtml_escape(self.current_user)
         type = self.get_argument('type')
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         try:
             if type=='IK':
                 value = str(self.get_argument('value')).replace(',','.')
                 medicine = self.get_argument('medicine')
-                data = {'type': 'IK', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time}
+                data = {'type': 'IK', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time, 'otime': datetime.datetime.now()}
             if type=='ID':
                 value = str(self.get_argument('value')).replace(',','.')
                 medicine = self.get_argument('medicine')
-                data = {'type': 'ID', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time}
+                data = {'type': 'ID', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time, 'otime': datetime.datetime.now()}
             if type=='MD':
                 value = str(self.get_argument('value')).replace(',','.')
                 medicine = self.get_argument('medicine')
-                data = {'type': 'MD', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time}
+                data = {'type': 'MD', 'value':float(value), 'medicine':medicine, 'user_id': name, 'time': current_time, 'otime': datetime.datetime.now()}
             if type=='GL':
                 value = str(self.get_argument('value')).replace(',','.')
-                data = {'type': 'GL', 'value':float(value), 'user_id': name, 'time': current_time}
+                data = {'type': 'GL', 'value':float(value), 'user_id': name, 'time': current_time, 'otime': datetime.datetime.now()}
             if type=='FD':
                 fileinfo = self.request.files['photo'][0]
                 fname = fileinfo['filename']
@@ -228,31 +229,31 @@ class MainHandler(BaseHandler):
                     food = tvorog.text
                 except:
                     pass
-                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': food}
+                data = {'type': 'FD', 'filename': cname, 'user_id': name, 'time': current_time, 'text': food, 'otime': datetime.datetime.now(), "weight": self.get_argument("weight", "")}
             if type=='GG':
                 value = str(self.get_argument('value')).replace(',', '.')
-                data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time, 'name': 'Гликированный гемоглобин'}
+                data = {'type': 'GG', 'value': float(value), 'user_id': name, 'time': current_time, 'name': 'Гликированный гемоглобин', 'otime': datetime.datetime.now()}
             if type == 'GG':
                 value = str(self.get_argument('value')).replace(',', '.')
                 data = {'type': 'WE', 'value': float(value), 'user_id': name, 'time': current_time,
-                        'name': 'Вес'}
+                        'name': 'Вес', 'otime': datetime.datetime.now()}
             if type=='LC':
                 ah_value = float(str(self.get_argument('ah_value')).replace(',', '.'))
                 lpn_value = float(str(self.get_argument('lpn_value')).replace(',', '.'))
                 lvn_value = float(str(self.get_argument('lvn_value')).replace(',', '.'))
                 tg_value = float(str(self.get_argument('tg_value')).replace(',', '.'))
 
-                data = {'type': 'AH', 'value': float(ah_value), 'user_id': name, 'time': current_time, 'name': 'Общий холестерин'}
+                data = {'type': 'AH', 'value': float(ah_value), 'user_id': name, 'time': current_time, 'name': 'Общий холестерин', 'otime': datetime.datetime.now()}
                 db['results'].insert_one(data)
-                data = {'type': 'LPN', 'value': float(lpn_value), 'user_id': name, 'time': current_time, 'name': 'ЛПН'}
+                data = {'type': 'LPN', 'value': float(lpn_value), 'user_id': name, 'time': current_time, 'name': 'ЛПН', 'otime': datetime.datetime.now()}
                 db['results'].insert_one(data)
-                data = {'type': 'LVN', 'value': float(lvn_value), 'user_id': name, 'time': current_time, 'name': 'ЛВН'}
+                data = {'type': 'LVN', 'value': float(lvn_value), 'user_id': name, 'time': current_time, 'name': 'ЛВН', 'otime': datetime.datetime.now()}
                 db['results'].insert_one(data)
-                data = {'type': 'TG', 'value': float(tg_value), 'user_id': name, 'time': current_time, 'name': 'Триглицериды'}
+                data = {'type': 'TG', 'value': float(tg_value), 'user_id': name, 'time': current_time, 'name': 'Триглицериды', 'otime': datetime.datetime.now()}
             if type=='AD':
                 lvalue = str(self.get_argument('lvalue')).replace(',', '.')
                 hvalue = str(self.get_argument('hvalue')).replace(',', '.')
-                data = {'type': 'AD', 'lvalue': float(lvalue),'hvalue': float(hvalue),'user_id': name, 'time': current_time}
+                data = {'type': 'AD', 'lvalue': float(lvalue),'hvalue': float(hvalue),'user_id': name, 'time': current_time, 'otime': datetime.datetime.now()}
 
             db['results'].insert_one(data)
 
@@ -262,10 +263,9 @@ class MainHandler(BaseHandler):
                 value = str(self.get_argument('value')).replace(',','.')
                 is_ok, status_message = get_status_and_message_for_gl(float(value))
                 message += status_message
-            self.render('client.html', message_ok=is_ok, message=message, error='')
+            self.render('client.html', message_ok=is_ok, message=message, error='', today=datetime.date.today().strftime('%Y-%m-%d'))
         except Exception as e:
-            print(e)
-            self.render('client.html', message='', error='Проверьте правильность данных!')
+            self.render('client.html', message='', error='Проверьте правильность данных!', today=datetime.date.today().strftime('%Y-%m-%d'))
 
 app = tornado.web.Application([
     (r"/exit", ExitHandler),
@@ -275,9 +275,9 @@ app = tornado.web.Application([
     (r"/diagno", DiagnoHandler),
     (r"/login", LoginHandler),
     (r"/events", EventsHandler),
-
-    ('/images/(.*)', tornado.web.StaticFileHandler, {'path': 'client/images'}),
+    (r"/images/(.*)", tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(os.path.realpath(__file__)),'images')}),
 ], cookie_secret="ajidfjijIJIJDIFjmkdmfkm2348fhjn", debug=True)
 
 app.listen(5555)
+
 tornado.ioloop.IOLoop.current().start()

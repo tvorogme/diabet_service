@@ -127,7 +127,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>Дневник питания</strong></div>
-                {% for record in reversed(images[len(images)-12:]) %}
+                {% for record in reversed(images) %}
                 <div class="media">
                     <div class="media-left media-top">
                         <img class="media-object img-thumbnail" style="width: 130px; margin: 10px;"
@@ -135,7 +135,7 @@
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">{{record['time']}}</h4>
-                        {{record['text']}}
+                        {{record['text']}}, {{record['weight']}}
                     </div>
                 </div>
                 {% end %}

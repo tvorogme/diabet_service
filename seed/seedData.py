@@ -7,7 +7,7 @@ client = MongoClient('mongodb://roctbb:rcw000000@ds161029.mlab.com:61029/diabetl
 
 db = client['diabetlab']
 
-user = db['users'].find_one({'email': 'roctbb@gmail.com'})
+user = db['users'].find_one({'email': 'diab@diab.ru'})
 
 name = str(user['_id'])
 
@@ -98,9 +98,9 @@ while date_copy < today:
         "user_id": name,
         "name": 'Артериальное давление'
     })
-now_date = datetime.datetime(2017, 2, 15, 0, 0);
+now_date = datetime.datetime(2017, 3, 1, 0, 0);
 
-while now_date.day <= 26:
+while now_date <= today:
     interval = random.randint(300, 400)
     now_date += datetime.timedelta(minutes=interval)
     if (now_date.hour < 7):
@@ -113,5 +113,6 @@ while now_date.day <= 26:
         "time": now_date.strftime("%Y-%m-%d %H:%M:%S"), "otime": now_date,
         "type": "FD",
         "text": 'Ужасная жирная еда!',
+        "weight": "200",
         "user_id": str(user['_id'])
     })

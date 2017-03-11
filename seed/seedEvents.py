@@ -7,7 +7,7 @@ client = MongoClient('mongodb://roctbb:rcw000000@ds161029.mlab.com:61029/diabetl
 
 db = client['diabetlab']
 
-user = db['users'].find_one({'email': 'roctbb@gmail.com'})
+user = db['users'].find_one({'email': 'diab@diab.ru'})
 
 name = str(user['_id'])
 
@@ -100,6 +100,19 @@ for i in range(10):
         'user': name
     }
     now_date += datetime.timedelta(days = 30*3)
+    events.append(event)
+
+now_date = today
+for i in range(20):
+    time = datetime.datetime.combine(now_date, datetime.time(12, 00))
+    event = {
+        'time': time,
+        'type': 'WE',
+        'title': 'Измерение веса.',
+        'description': '',
+        'user': name
+    }
+    now_date += datetime.timedelta(days = 7)
     events.append(event)
 
 
